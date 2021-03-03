@@ -177,4 +177,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.sendToDashboard();
 
   }
+
+public void resetGyro() {
+  m_gyro.reset();
+}
 }

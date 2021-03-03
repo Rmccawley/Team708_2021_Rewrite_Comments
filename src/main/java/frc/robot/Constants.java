@@ -35,8 +35,8 @@ public final class Constants {
 
     public static final boolean kFrontLeftDriveEncoderReversed = true;
     public static final boolean kRearLeftDriveEncoderReversed = true;
-    public static final boolean kFrontRightDriveEncoderReversed = false;
-    public static final boolean kRearRightDriveEncoderReversed = false;
+    public static final boolean kFrontRightDriveEncoderReversed = true;
+    public static final boolean kRearRightDriveEncoderReversed = true;
 
     //offset in degrees
     public static final double kRearLeftOffset = 34.2;
@@ -62,11 +62,11 @@ public final class Constants {
     // for *your* robot's drive.
     // The RobotPy Characterization Toolsuite provides a convenient tool for obtaining these
     // values for your robot.
-    public static final double ksVolts = 1;
-    public static final double kvVoltSecondsPerMeter = 0.8;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.15;
+    //public static final double ksVolts = 1;
+    //public static final double kvVoltSecondsPerMeter = 0.8;
+    //public static final double kaVoltSecondsSquaredPerMeter = 0.15;
 
-    public static final double kMaxSpeedMetersPerSecond = 5;
+    public static final double kMaxSpeedMetersPerSecond = 6;
   }
 
   public static final class ModuleConstants {
@@ -87,7 +87,7 @@ public final class Constants {
 
     public static final double kPModuleTurningController = 1;
 
-    public static final double kPModuleDriveController = 0;
+    public static final double kPModuleDriveController = 0.1;
   }
 
   public static final class OIConstants {

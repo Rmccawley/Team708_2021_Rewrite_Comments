@@ -56,7 +56,7 @@ public class RobotContainer {
                     m_driverController.getY(GenericHID.Hand.kLeft),
                     -m_driverController.getX(GenericHID.Hand.kLeft),
                     m_driverController.getX(GenericHID.Hand.kRight),
-                    false), m_robotDrive));
+                    true), m_robotDrive));
   }
 
 
@@ -66,7 +66,12 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling passing it to a
    * {@link JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+
+    if (m_driverController.getAButton()){
+        m_robotDrive.resetGyro();
+    }
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -88,9 +93,9 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            List.of(new Translation2d(3, 3), new Translation2d(6, -3)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
+            new Pose2d(9, 0, new Rotation2d(0)),
             config);
 
     var thetaController =

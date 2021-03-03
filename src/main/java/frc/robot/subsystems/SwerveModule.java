@@ -56,24 +56,9 @@ public class SwerveModule {
 
     configureMotors();
     resetEncoders();
-    // m_turningEncoder = new Encoder(turningEncoderPorts[0],
-    // turningEncoderPorts[1]);
-
-    // Set the distance per pulse for the drive encoder. We can simply use the
-    // distance traveled for one rotation of the wheel divided by the encoder
-    // resolution.
-    
 
     // Set whether drive encoder should be reversed or not
     m_driveMotor.setInverted(driveEncoderReversed);
-
-    // Set the distance (in this case, angle) per pulse for the turning encoder.
-    // This is the the angle through an entire rotation (2 * wpi::math::pi)
-    // divided by the encoder resolution.
-    //m_turningEncoder.setDistancePerPulse(ModuleConstants.kTurningEncoderDistancePerPulse);
-
-    // Set whether turning encoder should be reversed or not
-    //m_turningEncoder.setReverseDirection(turningEncoderReversed);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -102,6 +87,7 @@ public class SwerveModule {
   
     //drivePIDController.setFeedbackDevice(driveEncoder);
     m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse);
+    m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse*.02057142);
     m_driveEncoder.setPosition(0.0);
     m_driveMotor.setIdleMode(IdleMode.kCoast);
     //drivePIDController.setP(0.2);
@@ -159,6 +145,6 @@ public class SwerveModule {
     SmartDashboard.putNumber(modID + " drive pos", m_driveEncoder.getPosition());
     SmartDashboard.putNumber(modID + " drive vel", m_driveEncoder.getVelocity());
     SmartDashboard.putNumber(modID + " turn pos", m_turningMotor.getSelectedSensorPosition(0) * ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
-    SmartDashboard.putNumber(modID + " turn vel", m_turningMotor.getSelectedSensorVelocity(0) * ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
+    //SmartDashboard.putNumber(modID + " turn vel", m_turningMotor.getSelectedSensorVelocity(0) * ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
   }
 }
