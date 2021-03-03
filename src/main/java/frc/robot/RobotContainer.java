@@ -54,10 +54,11 @@ public class RobotContainer {
             () ->
                 m_robotDrive.drive(
                     m_driverController.getY(GenericHID.Hand.kLeft),
+                    -m_driverController.getX(GenericHID.Hand.kLeft),
                     m_driverController.getX(GenericHID.Hand.kRight),
-                    m_driverController.getX(GenericHID.Hand.kLeft),
                     false), m_robotDrive));
   }
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -115,5 +116,9 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+  }
+
+  public void sendToDashboard(){
+      m_robotDrive.sendToDashboard();
   }
 }

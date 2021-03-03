@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @SuppressWarnings("PMD.ExcessiveImports")
@@ -18,39 +19,39 @@ public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
   private final SwerveModule m_frontLeft =
       new SwerveModule(
+        "frontLeft",
           DriveConstants.kFrontLeftDriveMotorPort,
           DriveConstants.kFrontLeftTurningMotorPort,
-          DriveConstants.kFrontLeftDriveEncoderPorts,
-          DriveConstants.kFrontLeftTurningEncoderPorts,
           DriveConstants.kFrontLeftDriveEncoderReversed,
-          DriveConstants.kFrontLeftTurningEncoderReversed);
+          DriveConstants.kFrontLeftTurningEncoderReversed,
+          DriveConstants.kFrontLeftOffset);
 
   private final SwerveModule m_rearLeft =
       new SwerveModule(
+        "rearLeft",
           DriveConstants.kRearLeftDriveMotorPort,
           DriveConstants.kRearLeftTurningMotorPort,
-          DriveConstants.kRearLeftDriveEncoderPorts,
-          DriveConstants.kRearLeftTurningEncoderPorts,
           DriveConstants.kRearLeftDriveEncoderReversed,
-          DriveConstants.kRearLeftTurningEncoderReversed);
+          DriveConstants.kRearLeftTurningEncoderReversed,
+          DriveConstants.kRearLeftOffset);
 
   private final SwerveModule m_frontRight =
       new SwerveModule(
+        "frontRight",
           DriveConstants.kFrontRightDriveMotorPort,
           DriveConstants.kFrontRightTurningMotorPort,
-          DriveConstants.kFrontRightDriveEncoderPorts,
-          DriveConstants.kFrontRightTurningEncoderPorts,
           DriveConstants.kFrontRightDriveEncoderReversed,
-          DriveConstants.kFrontRightTurningEncoderReversed);
+          DriveConstants.kFrontRightTurningEncoderReversed,
+          DriveConstants.kFrontRightOffset);
 
   private final SwerveModule m_rearRight =
       new SwerveModule(
+        "rearRight",
           DriveConstants.kRearRightDriveMotorPort,
           DriveConstants.kRearRightTurningMotorPort,
-          DriveConstants.kRearRightDriveEncoderPorts,
-          DriveConstants.kRearRightTurningEncoderPorts,
           DriveConstants.kRearRightDriveEncoderReversed,
-          DriveConstants.kRearRightTurningEncoderReversed);
+          DriveConstants.kRearRightTurningEncoderReversed,
+          DriveConstants.kRearRightOffset);
 
   // The gyro sensor
   private final Pigeon m_gyro = Pigeon.getInstance();
@@ -161,7 +162,19 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   public void sendToDashboard(){
+    SmartDashboard.putNumber("State rad FL", m_frontLeft.getState().angle.getDegrees() % 360);
+    SmartDashboard.putNumber("State rad RL", m_rearLeft.getState().angle.getDegrees() % 360);
+    SmartDashboard.putNumber("State rad FR", m_frontRight.getState().angle.getDegrees() % 360);
+    SmartDashboard.putNumber("State rad RR", m_rearRight.getState().angle.getDegrees() % 360);
+    SmartDashboard.putNumber("State m/s FL", m_frontLeft.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("State m/s RL:", m_rearLeft.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("State m/s FR", m_frontRight.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("State m/s RR", m_rearRight.getState().speedMetersPerSecond);
     m_gyro.outputToSmartDashboard();
+    m_frontLeft.sendToDashboard();
+    m_rearLeft.sendToDashboard();
+    m_frontRight.sendToDashboard();
+    m_rearRight.sendToDashboard();
 
   }
 }

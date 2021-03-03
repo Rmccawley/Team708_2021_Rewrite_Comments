@@ -18,35 +18,31 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
  */
 public final class Constants {
   public static final class DriveConstants {
-    public static final int kFrontLeftDriveMotorPort = 12;
-    public static final int kRearLeftDriveMotorPort = 13;
-    public static final int kFrontRightDriveMotorPort = 11;
-    public static final int kRearRightDriveMotorPort = 14;
+    public static final int kFrontLeftDriveMotorPort = 13;
+    public static final int kRearLeftDriveMotorPort = 12;
+    public static final int kFrontRightDriveMotorPort = 14;
+    public static final int kRearRightDriveMotorPort = 11;
 
-    public static final int kFrontLeftTurningMotorPort = 16;
-    public static final int kRearLeftTurningMotorPort = 17;
-    public static final int kFrontRightTurningMotorPort = 15;
-    public static final int kRearRightTurningMotorPort = 18;
-
-    public static final int[] kFrontLeftTurningEncoderPorts = new int[] {0, 1};
-    public static final int[] kRearLeftTurningEncoderPorts = new int[] {2, 3};
-    public static final int[] kFrontRightTurningEncoderPorts = new int[] {4, 5};
-    public static final int[] kRearRightTurningEncoderPorts = new int[] {5, 6};
+    public static final int kFrontLeftTurningMotorPort = 17;
+    public static final int kRearLeftTurningMotorPort = 16;
+    public static final int kFrontRightTurningMotorPort = 18;
+    public static final int kRearRightTurningMotorPort = 15;
 
     public static final boolean kFrontLeftTurningEncoderReversed = true;
     public static final boolean kRearLeftTurningEncoderReversed = true;
     public static final boolean kFrontRightTurningEncoderReversed = false;
     public static final boolean kRearRightTurningEncoderReversed = false;
 
-    public static final int[] kFrontLeftDriveEncoderPorts = new int[] {7, 8};
-    public static final int[] kRearLeftDriveEncoderPorts = new int[] {9, 10};
-    public static final int[] kFrontRightDriveEncoderPorts = new int[] {11, 12};
-    public static final int[] kRearRightDriveEncoderPorts = new int[] {13, 14};
-
     public static final boolean kFrontLeftDriveEncoderReversed = true;
     public static final boolean kRearLeftDriveEncoderReversed = true;
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kRearRightDriveEncoderReversed = false;
+
+    //offset in degrees
+    public static final double kRearLeftOffset = 34.2;
+    public static final double kRearRightOffset = 93.2;
+    public static final double kFrontLeftOffset = 68.2;
+    public static final double kFrontRightOffset = 136.4;
 
     public static final double kTrackWidth = 0.444;
     // Distance between centers of right and left wheels on robot
@@ -66,23 +62,23 @@ public final class Constants {
     // for *your* robot's drive.
     // The RobotPy Characterization Toolsuite provides a convenient tool for obtaining these
     // values for your robot.
-    //public static final double ksVolts = 1;
-    //public static final double kvVoltSecondsPerMeter = 0.8;
-    //public static final double kaVoltSecondsSquaredPerMeter = 0.15;
+    public static final double ksVolts = 1;
+    public static final double kvVoltSecondsPerMeter = 0.8;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.15;
 
-    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 5;
   }
 
   public static final class ModuleConstants {
-    public static final double kMaxModuleAngularSpeedRadiansPerSecond = 2 * Math.PI;
-    public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
+    public static final double kMaxModuleAngularSpeedRadiansPerSecond = 10 * Math.PI;
+    public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 8 * Math.PI;
 
     public static final int kEncoderCPR = 42;
     public static final double kEncoderRatio = .119;
     public static final double kWheelDiameterMeters = 0.1;
     public static final double kDriveEncoderDistancePerPulse =
         // Assumes the encoders are directly mounted on the wheel shafts
-        ((kEncoderCPR * kEncoderRatio) / Math.PI * (kWheelDiameterMeters));
+        ((kEncoderCPR * kEncoderRatio) / Math.PI * (kWheelDiameterMeters) / 3.056814908981323);
         //(kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
 
     public static final double kTurningEncoderDistancePerPulse =
@@ -91,7 +87,7 @@ public final class Constants {
 
     public static final double kPModuleTurningController = 1;
 
-    public static final double kPModuleDriveController = 0.2;
+    public static final double kPModuleDriveController = 0;
   }
 
   public static final class OIConstants {
@@ -99,10 +95,10 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final double kMaxSpeedMetersPerSecond = 6;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 6;
+    public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = 2*Math.PI;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
