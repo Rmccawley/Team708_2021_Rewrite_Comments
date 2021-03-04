@@ -29,7 +29,6 @@ public class SwerveModule {
   private final String modID;
   private final double offset;
   private final CANEncoder m_driveEncoder;
-  // private final Encoder m_turningEncoder;
 
   private final PIDController m_drivePIDController = new PIDController(ModuleConstants.kPModuleDriveController, 0, 0);
 
@@ -45,14 +44,14 @@ public class SwerveModule {
    * @param driveMotorChannel   ID for the drive motor.
    * @param turningMotorChannel ID for the turning motor.
    */
-  public SwerveModule(String modID, int driveMotorChannel, int turningMotorChannel, boolean driveEncoderReversed, boolean turningEncoderReversed, double offset) {
+  public SwerveModule(String modID, int driveMotorChannel, int turningMotorChannel, boolean driveEncoderReversed,
+      boolean turningEncoderReversed, double offset) {
     this.modID = modID;
     this.offset = offset;
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new TalonSRX(turningMotorChannel);
 
     m_driveEncoder = m_driveMotor.getEncoder();
-
 
     configureMotors();
     resetEncoders();
@@ -65,7 +64,7 @@ public class SwerveModule {
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
-  private void configureMotors(){
+  private void configureMotors() {
     m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
     m_turningMotor.setSensorPhase(true);
     m_turningMotor.setInverted(false);
@@ -76,35 +75,34 @@ public class SwerveModule {
     m_turningMotor.configNominalOutputForward(0.0, 10);
     m_turningMotor.configNominalOutputReverse(0.0, 10);
     m_turningMotor.configAllowableClosedloopError(0, 0, 10);
-    m_turningMotor.configMotionAcceleration((int)(1992*1.0), 10);  //10.0 jnp
-    m_turningMotor.configMotionCruiseVelocity((int)(1992*1.0), 10);//0.8  jnp
+    m_turningMotor.configMotionAcceleration((int) (1992 * 1.0), 10); // 10.0 jnp
+    m_turningMotor.configMotionCruiseVelocity((int) (1992 * 1.0), 10);// 0.8 jnp
     m_turningMotor.selectProfileSlot(0, 0);
-    m_turningMotor.config_kP(0, 4.0, 10);//1
+    m_turningMotor.config_kP(0, 4.0, 10);// 1
     m_turningMotor.config_kI(0, 0.0, 10);
-    m_turningMotor.config_kD(0, 80.0, 10);//10 
-    m_turningMotor.config_kF(0, 0.75 * (1023.0/1992), 10);
+    m_turningMotor.config_kD(0, 80.0, 10);// 10
+    m_turningMotor.config_kF(0, 0.75 * (1023.0 / 1992), 10);
     m_turningMotor.set(ControlMode.MotionMagic, m_turningMotor.getSelectedSensorPosition(0));
-  
-    //drivePIDController.setFeedbackDevice(driveEncoder);
+
+    // drivePIDController.setFeedbackDevice(driveEncoder);
     m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse);
-    m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse*.02057142);
+    m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse * .02057142);
     m_driveEncoder.setPosition(0.0);
-    m_driveMotor.setIdleMode(IdleMode.kCoast);
-    //drivePIDController.setP(0.2);
-    //drivePIDController.setI(0);
-    //drivePIDController.setD(24);
-}
+    m_driveMotor.setIdleMode(IdleMode.kBrake);
+    // drivePIDController.setP(0.2);
+    // drivePIDController.setI(0);
+    // drivePIDController.setD(24);
+  }
 
-
-/**
+  /**
    * Returns the current angle the module.
    *
    * @return The current angle of the module in radians.
    */
-  public double getAngle(){
-    return (m_turningMotor.getSelectedSensorPosition(0) * ModuleConstants.kTurningEncoderDistancePerPulse) + (offset * Math.PI / 180);
+  public double getAngle() {
+    return (m_turningMotor.getSelectedSensorPosition(0) * ModuleConstants.kTurningEncoderDistancePerPulse)
+        + (offset * Math.PI / 180);
   }
-
 
   /**
    * Returns the current state of the module.
@@ -138,13 +136,17 @@ public class SwerveModule {
   /** Zeros all the SwerveModule encoders. */
   public void resetEncoders() {
     m_driveEncoder.setPosition(0);
-    //m_turningMotor.setSelectedSensorPosition(0);
+    // m_turningMotor.setSelectedSensorPosition(0);
   }
 
-  public void sendToDashboard(){
-    SmartDashboard.putNumber(modID + " drive pos", m_driveEncoder.getPosition());
+  public void sendToDashboard() {
+    // SmartDashboard.putNumber(modID + " drive pos", m_driveEncoder.getPosition());
     SmartDashboard.putNumber(modID + " drive vel", m_driveEncoder.getVelocity());
-    SmartDashboard.putNumber(modID + " turn pos", m_turningMotor.getSelectedSensorPosition(0) * ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
-    //SmartDashboard.putNumber(modID + " turn vel", m_turningMotor.getSelectedSensorVelocity(0) * ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
+    // SmartDashboard.putNumber(modID + " turn pos",
+    // m_turningMotor.getSelectedSensorPosition(0) *
+    // ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
+    // SmartDashboard.putNumber(modID + " turn vel",
+    // m_turningMotor.getSelectedSensorVelocity(0) *
+    // ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
   }
 }

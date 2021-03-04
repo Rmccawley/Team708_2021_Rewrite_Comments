@@ -4,10 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import frc.robot.commands.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -15,15 +18,18 @@ import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 /*
@@ -38,8 +44,16 @@ public class RobotContainer {
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  JoystickButton aButton = new JoystickButton(m_driverController, 1);
+  JoystickButton bButton = new JoystickButton(m_driverController, 2);
+  JoystickButton xButton = new JoystickButton(m_driverController, 3);
+  JoystickButton yButton = new JoystickButton(m_driverController, 4);
+  JoystickButton backButton = new JoystickButton(m_driverController, 7);
+  
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
@@ -50,27 +64,26 @@ public class RobotContainer {
         // A split-stick arcade command, with forward/backward controlled by the left
         // hand, and turning controlled by the right.
         new RunCommand(
-            
-            () ->
-                m_robotDrive.drive(
-                    m_driverController.getY(GenericHID.Hand.kLeft),
-                    -m_driverController.getX(GenericHID.Hand.kLeft),
-                    m_driverController.getX(GenericHID.Hand.kRight),
-                    true), m_robotDrive));
+
+            () -> m_robotDrive.drive(
+              10 * m_driverController.getY(GenericHID.Hand.kLeft),
+              -10 * m_driverController.getX(GenericHID.Hand.kLeft),
+              10 * m_driverController.getX(GenericHID.Hand.kRight), true),
+            m_robotDrive));
   }
 
-
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling passing it to a
-   * {@link JoystickButton}.
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by instantiating a {@link GenericHID} or one of its subclasses
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+   * calling passing it to a {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-
-    if (m_driverController.getAButton()){
-        m_robotDrive.resetGyro();
-    }
+    backButton.whenPressed(new resetGyroCommand(m_robotDrive));
+    aButton.whenPressed(new turnToCommand(m_robotDrive, 0));
+    bButton.whenPressed(new turnToCommand(m_robotDrive, 90));
+    xButton.whenPressed(new turnToCommand(m_robotDrive, 180));
+    yButton.whenPressed(new turnToCommand(m_robotDrive, 270));
   }
 
   /**
@@ -80,50 +93,57 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
+    String trajectoryJSON = "paths/two.wpilib.json";
+    Trajectory trajectory = new Trajectory();
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
+    // TrajectoryConfig config =
+    // new TrajectoryConfig(
+    // AutoConstants.kMaxSpeedMetersPerSecond,
+    // AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+    // // Add kinematics to ensure max speed is actually obeyed
+    // .setKinematics(DriveConstants.kDriveKinematics);
 
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(3, 3), new Translation2d(6, -3)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(9, 0, new Rotation2d(0)),
-            config);
+    // An example trajectory to follow. All units in meters.
+    // Trajectory exampleTrajectory =
+    // TrajectoryGenerator.generateTrajectory(
+    // // Start at the origin facing the +X direction
+    // new Pose2d(0, 0, new Rotation2d(0)),
+    // List.of(new Translation2d(2,2)),
+    // new Pose2d(4, 0, new Rotation2d(0)),
+    // config);
 
-    var thetaController =
-        new ProfiledPIDController(
-            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    var thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0,
+        AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveControllerCommand =
-        new SwerveControllerCommand(
-            exampleTrajectory,
-            m_robotDrive::getPose, // Functional interface to feed supplier
-            DriveConstants.kDriveKinematics,
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, m_robotDrive::getPose, // Functional
+                                                                                                                     // interface
+                                                                                                                     // to
+                                                                                                                     // feed
+                                                                                                                     // supplier
+        DriveConstants.kDriveKinematics,
 
-            // Position controllers
-            new PIDController(AutoConstants.kPXController, 0, 0),
-            new PIDController(AutoConstants.kPYController, 0, 0),
-            thetaController,
-            m_robotDrive::setModuleStates,
-            m_robotDrive);
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0), new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController, m_robotDrive::setModuleStates, m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    m_robotDrive.resetOdometry(trajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
 
-  public void sendToDashboard(){
-      m_robotDrive.sendToDashboard();
+  public void sendToDashboard() {
+    m_robotDrive.sendToDashboard();
+    // SmartDashboard.putNumber("LY",
+    // m_driverController.getY(GenericHID.Hand.kLeft));
+    // SmartDashboard.putData("reset Gyro", new resetGyroCommand(m_robotDrive));
+    // SmartDashboard.putData(m_robotDrive);
   }
 }
