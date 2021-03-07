@@ -49,7 +49,7 @@ public class RobotContainer {
   JoystickButton xButton = new JoystickButton(m_driverController, 3);
   JoystickButton yButton = new JoystickButton(m_driverController, 4);
   JoystickButton backButton = new JoystickButton(m_driverController, 7);
-  
+  JoystickButton l3Button = new JoystickButton(m_driverController, 9);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -65,10 +65,9 @@ public class RobotContainer {
         // hand, and turning controlled by the right.
         new RunCommand(
 
-            () -> m_robotDrive.drive(
-              10 * m_driverController.getY(GenericHID.Hand.kLeft),
-              -10 * m_driverController.getX(GenericHID.Hand.kLeft),
-              10 * m_driverController.getX(GenericHID.Hand.kRight), true),
+            () -> m_robotDrive.drive(10 * m_driverController.getY(GenericHID.Hand.kLeft),
+                -10 * m_driverController.getX(GenericHID.Hand.kLeft),
+                25 * m_driverController.getX(GenericHID.Hand.kRight), true),
             m_robotDrive));
   }
 
@@ -80,10 +79,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     backButton.whenPressed(new resetGyroCommand(m_robotDrive));
-    aButton.whenPressed(new turnToCommand(m_robotDrive, 0));
-    bButton.whenPressed(new turnToCommand(m_robotDrive, 90));
-    xButton.whenPressed(new turnToCommand(m_robotDrive, 180));
-    yButton.whenPressed(new turnToCommand(m_robotDrive, 270));
+    aButton.whenPressed(new turnToCommand(180, m_robotDrive));
+    bButton.whenPressed(new turnToCommand(270, m_robotDrive));
+    xButton.whenPressed(new turnToCommand(90, m_robotDrive));
+    yButton.whenPressed(new turnToCommand(0, m_robotDrive));
+    l3Button.whenPressed(new cancelDriveCommand(m_robotDrive));
   }
 
   /**
@@ -108,7 +108,7 @@ public class RobotContainer {
     // // Add kinematics to ensure max speed is actually obeyed
     // .setKinematics(DriveConstants.kDriveKinematics);
 
-    // An example trajectory to follow. All units in meters.
+    // // An example trajectory to follow. All units in meters.
     // Trajectory exampleTrajectory =
     // TrajectoryGenerator.generateTrajectory(
     // // Start at the origin facing the +X direction
@@ -121,11 +121,7 @@ public class RobotContainer {
         AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, m_robotDrive::getPose, // Functional
-                                                                                                                     // interface
-                                                                                                                     // to
-                                                                                                                     // feed
-                                                                                                                     // supplier
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, m_robotDrive::getPose,
         DriveConstants.kDriveKinematics,
 
         // Position controllers
@@ -141,9 +137,13 @@ public class RobotContainer {
 
   public void sendToDashboard() {
     m_robotDrive.sendToDashboard();
-    // SmartDashboard.putNumber("LY",
-    // m_driverController.getY(GenericHID.Hand.kLeft));
-    // SmartDashboard.putData("reset Gyro", new resetGyroCommand(m_robotDrive));
-    // SmartDashboard.putData(m_robotDrive);
+    //SmartDashboard.putNumber("RX", 25 * m_driverController.getX(GenericHID.Hand.kRight));
+    //SmartDashboard.putData("reset Gyro", new resetGyroCommand(m_robotDrive));
+    //SmartDashboard.putData("turn to 0", new turnToCommand(0, m_robotDrive));
+    //SmartDashboard.putData("turn to 90", new turnToCommand(90, m_robotDrive));
+    //SmartDashboard.putData("turn to 180", new turnToCommand(180, m_robotDrive));
+    //SmartDashboard.putData("turn to 270", new turnToCommand(270, m_robotDrive));
+    //SmartDashboard.putData("Cancel", new cancelDriveCommand(m_robotDrive));
+    //SmartDashboard.putData(m_robotDrive);
   }
 }

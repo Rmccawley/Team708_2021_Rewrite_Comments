@@ -141,10 +141,10 @@ public class SwerveModule {
 
   public void sendToDashboard() {
     // SmartDashboard.putNumber(modID + " drive pos", m_driveEncoder.getPosition());
-    SmartDashboard.putNumber(modID + " drive vel", m_driveEncoder.getVelocity());
-    // SmartDashboard.putNumber(modID + " turn pos",
-    // m_turningMotor.getSelectedSensorPosition(0) *
-    // ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
+    //SmartDashboard.putNumber(modID + " drive vel", m_driveEncoder.getVelocity());
+    SmartDashboard.putNumber(modID + " turn pos",
+    m_turningMotor.getSelectedSensorPosition(0) *
+    ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
     // SmartDashboard.putNumber(modID + " turn vel",
     // m_turningMotor.getSelectedSensorVelocity(0) *
     // ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);

@@ -47,7 +47,7 @@ public class Pigeon {
 	public double getRate() {
 		double[] ypr = new double[3];
 		pigeon.getRawGyro(ypr);
-		return -ypr[0];
+		return ypr[2];
 	}
 
 	public double getRawAngle() {

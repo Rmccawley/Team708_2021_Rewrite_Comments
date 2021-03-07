@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
@@ -121,7 +123,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return m_gyro.getAngle().getDegrees();
+    return (Math.floorMod((long) -m_gyro.getAngle().getDegrees(), (long) 360));
   }
 
   /**
@@ -130,7 +132,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return m_gyro.getRate();
+  }
+
+  public Rotation2d getRotation(){
+    return Rotation2d.fromDegrees(getHeading());
   }
 
   public void sendToDashboard() {
@@ -142,10 +148,13 @@ public class DriveSubsystem extends SubsystemBase {
     // m_frontRight.getState().angle.getDegrees() % 360);
     // SmartDashboard.putNumber("State rad RR",
     // m_rearRight.getState().angle.getDegrees() % 360);
-    SmartDashboard.putNumber("State m/s FL", m_frontLeft.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("State m/s RL:", m_rearLeft.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("State m/s FR", m_frontRight.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("State m/s RR", m_rearRight.getState().speedMetersPerSecond);
+    //SmartDashboard.putNumber("State m/s FL", m_frontLeft.getState().speedMetersPerSecond);
+    //SmartDashboard.putNumber("State m/s RL:", m_rearLeft.getState().speedMetersPerSecond);
+    //SmartDashboard.putNumber("State m/s FR", m_frontRight.getState().speedMetersPerSecond);
+    //SmartDashboard.putNumber("State m/s RR", m_rearRight.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("turn rate", getTurnRate());
+    SmartDashboard.putNumber("heading", getHeading());
+    //SmartDashboard.putNumber("heading2", m_gyro.getAngle().getDegrees());
     m_gyro.outputToSmartDashboard();
     m_frontLeft.sendToDashboard();
     m_rearLeft.sendToDashboard();
