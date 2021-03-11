@@ -2,12 +2,12 @@ package frc.robot;
 
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.StopAllCommand;
-import frc.robot.commands.Shooter.ReverseFeederCommand;
-import frc.robot.commands.Shooter.ShootLongCommand;
-import frc.robot.commands.Shooter.ShootShortCommand;
 import frc.robot.commands.drive.*;
 import frc.robot.commands.hopper.RotateHopperCommand;
 import frc.robot.commands.intake.ReverseIntakeCommand;
+import frc.robot.commands.shooter.ReverseFeederCommand;
+import frc.robot.commands.shooter.ShootLongCommand;
+import frc.robot.commands.shooter.ShootShortCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Spinner;

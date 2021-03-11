@@ -1,24 +1,27 @@
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
 
-public class ReverseFeederCommand extends CommandBase {
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
+public class ShooterPreloadCommand extends CommandBase {
+    
     private final Shooter m_shooter;
 
-    public ReverseFeederCommand(Shooter shooter) {
+    public ShooterPreloadCommand(Shooter shooter) {
         m_shooter = shooter;
         addRequirements(m_shooter);
     }
 
     @Override
     public void initialize() {
-        m_shooter.feederUnload();
+        m_shooter.feederPreLoad();
+        m_shooter.stopShooter();
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
+
 }

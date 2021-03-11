@@ -8,9 +8,10 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.Shooter.StopShooterCommand;
 import frc.robot.commands.hopper.StopHopperCommand;
 import frc.robot.commands.intake.StartIntakeCommand;
+import frc.robot.commands.shooter.ShooterPreloadCommand;
+import frc.robot.commands.shooter.StopShooterCommand;
 import frc.robot.commands.turret.UpdateAngleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Hopper;
@@ -51,7 +52,8 @@ public class RobotContainer {
     OI.configureButtonBindings(m_robotDrive, m_hopper, m_spinner, m_shooter, m_turret, m_visionProcessor);
 
     // Configure default commands
-    m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
+    m_shooter.setDefaultCommand(new ShooterPreloadCommand(m_shooter));
+    //m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
     m_turret.setDefaultCommand(new UpdateAngleCommand(m_turret));
     m_spinner.setDefaultCommand(new StartIntakeCommand(m_spinner));
     m_hopper.setDefaultCommand(new StopHopperCommand(m_hopper));
