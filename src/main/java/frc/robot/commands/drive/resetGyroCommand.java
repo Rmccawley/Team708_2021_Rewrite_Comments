@@ -1,18 +1,23 @@
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class cancelDriveCommand extends CommandBase {
+public class resetGyroCommand extends CommandBase {
 
     private final DriveSubsystem m_DriveSubsystem;
 
-    public cancelDriveCommand(DriveSubsystem subsystem) {
+    public resetGyroCommand(DriveSubsystem subsystem) {
         m_DriveSubsystem = subsystem;
         addRequirements(m_DriveSubsystem);
     }
 
-    // Make this return true when this Command no longer needs to run execute()
+    @Override
+    public void initialize() {
+        m_DriveSubsystem.zeroHeading();
+    }
+
+    @Override
     public boolean isFinished() {
         return true;
     }

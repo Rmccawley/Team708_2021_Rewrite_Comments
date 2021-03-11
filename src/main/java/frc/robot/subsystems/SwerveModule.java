@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -88,7 +84,7 @@ public class SwerveModule {
     m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse);
     m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse * .02057142);
     m_driveEncoder.setPosition(0.0);
-    m_driveMotor.setIdleMode(IdleMode.kBrake);
+    m_driveMotor.setIdleMode(IdleMode.kCoast);
     // drivePIDController.setP(0.2);
     // drivePIDController.setI(0);
     // drivePIDController.setD(24);
@@ -140,8 +136,8 @@ public class SwerveModule {
   }
 
   public void sendToDashboard() {
-    // SmartDashboard.putNumber(modID + " drive pos", m_driveEncoder.getPosition());
-    //SmartDashboard.putNumber(modID + " drive vel", m_driveEncoder.getVelocity());
+    SmartDashboard.putNumber(modID + " drive pos", m_driveEncoder.getPosition());
+    SmartDashboard.putNumber(modID + " drive vel", m_driveEncoder.getVelocity());
     SmartDashboard.putNumber(modID + " turn pos",
     m_turningMotor.getSelectedSensorPosition(0) *
     ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
