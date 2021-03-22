@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 public final class Constants {
 
   public static final class RobotConstants {
-    public static final int kRobot = 0; // snowflake = 1, competition = 0
+    public static final int kRobot = 1; // snowflake = 1, competition = 0
   }
 
   public static final class DriveConstants {
@@ -47,17 +47,6 @@ public final class Constants {
 
     public static final boolean kGyroReversed = true;
 
-    // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-    // These characterization values MUST be determined either experimentally or
-    // theoretically
-    // for *your* robot's drive.
-    // The RobotPy Characterization Toolsuite provides a convenient tool for
-    // obtaining these
-    // values for your robot.
-    // public static final double ksVolts = 1;
-    // public static final double kvVoltSecondsPerMeter = 0.8;
-    // public static final double kaVoltSecondsSquaredPerMeter = 0.15;
-
     public static final double kMaxSpeedMetersPerSecond = 25;
   }
 
@@ -68,6 +57,8 @@ public final class Constants {
     public static final int kEncoderCPR = 42;
     public static final double kEncoderRatio = .119;
     public static final double kWheelDiameterMeters = 0.1;
+    public static final double kDriveEncoderVelocityPerPulse = 0.00107063517;
+    public static final double kVelocityModifier = 0.85;
     public static final double kDriveEncoderDistancePerPulse = ((kEncoderCPR * kEncoderRatio) / Math.PI
         * (kWheelDiameterMeters) / 3.056814908981323);
 
@@ -86,7 +77,7 @@ public final class Constants {
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPThetaController = 0.5;
 
     // Constraint for the motion profilied robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(

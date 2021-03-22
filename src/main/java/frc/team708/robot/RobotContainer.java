@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 
 import frc.team708.robot.Constants.AutoConstants;
 import frc.team708.robot.Constants.DriveConstants;
+import frc.team708.robot.commands.auto.SwerveCommand;
+import frc.team708.robot.commands.drive.CancelDriveCommand;
 import frc.team708.robot.commands.hopper.StopHopperCommand;
 import frc.team708.robot.commands.intake.StartIntakeCommand;
 import frc.team708.robot.commands.shooter.ShooterPreloadCommand;
@@ -23,10 +25,12 @@ import frc.team708.robot.subsystems.VisionProcessor;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -43,6 +47,7 @@ public class RobotContainer {
   public static final Shooter m_shooter = new Shooter();
   private static final Turret m_turret = new Turret();
   public static final VisionProcessor m_visionProcessor = new VisionProcessor();
+  public static final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -53,15 +58,29 @@ public class RobotContainer {
 
     // Configure default commands
     m_shooter.setDefaultCommand(new ShooterPreloadCommand(m_shooter));
-    //m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
+    // m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
     m_turret.setDefaultCommand(new UpdateAngleCommand(m_turret));
     m_spinner.setDefaultCommand(new StartIntakeCommand(m_spinner));
     m_hopper.setDefaultCommand(new StopHopperCommand(m_hopper));
     m_robotDrive.setDefaultCommand(new RunCommand(
 
-        () -> m_robotDrive.drive(10 * OI.getDriverY(GenericHID.Hand.kLeft), -10 * OI.getDriverX(GenericHID.Hand.kLeft),
-            25 * OI.getDriverX(GenericHID.Hand.kRight), true),
+        () -> m_robotDrive.drive(m_robotDrive.getSpeedCoeff() * OI.getDriverY(GenericHID.Hand.kLeft),
+            -m_robotDrive.getSpeedCoeff() * OI.getDriverX(GenericHID.Hand.kLeft),
+            m_robotDrive.getSpeedCoeff() * 25 / 10 * OI.getDriverX(GenericHID.Hand.kRight), true),
         m_robotDrive));
+
+    m_chooser.setDefaultOption("nothing", new CancelDriveCommand(m_robotDrive));
+    m_chooser.addOption("0 -> 6 in x",
+        new SwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+            List.of(new Translation2d(3, 0)), new Pose2d(6, 0, Rotation2d.fromDegrees(0)))));
+    m_chooser.addOption("0 -> 3 in y",
+        new SwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+            List.of(new Translation2d(0, 1.5)), new Pose2d(0, 3, Rotation2d.fromDegrees(0)))));
+    m_chooser.addOption("slalom path", new SwerveCommand(m_robotDrive, findTrajectory("slalom")));
+    m_chooser.addOption("bounce path", new SwerveCommand(m_robotDrive, findTrajectory("bounce")));
+    m_chooser.addOption("barrel path", new SwerveCommand(m_robotDrive, findTrajectory("barrel")));
+    SmartDashboard.putData("Auto Chooser", m_chooser);
+
   }
 
   /**
@@ -70,48 +89,42 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    // String trajectoryJSON = "paths/two.wpilib.json";
-    // Trajectory trajectory = new Trajectory();
-    // try {
-    // Path trajectoryPath =
-    // Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-    // trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    // } catch (IOException ex) {
-    // DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON,
-    // ex.getStackTrace());
-    // }
+    return m_chooser.getSelected();
+  }
+
+  /**
+   * Finds the trajectory on the rio
+   *
+   * @param json the mane of the json
+   * @return the trajectory
+   * 
+   */
+  public Trajectory findTrajectory(String json) {
+
+    String trajectoryJSON = "paths/" + json + ".wpilib.json";
+    Trajectory trajectory = new Trajectory();
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
+    return trajectory;
+  }
+
+  public Trajectory createTrejectory(Pose2d start, List<Translation2d> waypoints, Pose2d stop) {
+
     TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveConstants.kDriveKinematics);
 
     // An example trajectory to follow. All units in meters.
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(2, 2), new Translation2d(4, 0)),
-        new Pose2d(0, 0, new Rotation2d(0)), config);
-
-    var thetaController = new ProfiledPIDController(0.2, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, m_robotDrive::getPose,
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(0.2, 0, 0), new PIDController(0.2, 0, 0), thetaController, m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(trajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen();// -> m_robotDrive.drive(0, 0, 0, false));
+    return TrajectoryGenerator.generateTrajectory(start, waypoints, stop, config);
   }
 
   public void sendToDashboard() {
     m_robotDrive.sendToDashboard();
-    SmartDashboard.putNumber("LX", 25 * OI.getDriverX(GenericHID.Hand.kLeft));
+    // SmartDashboard.putNumber("LX", 25 * OI.getDriverX(GenericHID.Hand.kLeft));
     // SmartDashboard.putData("reset Gyro", new resetGyroCommand(m_robotDrive));
     // SmartDashboard.putData("turn to 0", new turnToCommand(0, m_robotDrive));
     // SmartDashboard.putData("turn to 90", new turnToCommand(90, m_robotDrive));

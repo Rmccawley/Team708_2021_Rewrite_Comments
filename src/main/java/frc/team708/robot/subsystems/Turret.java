@@ -11,7 +11,6 @@ import frc.team708.robot.RobotContainer;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Turret extends SubsystemBase {
 
@@ -37,7 +36,6 @@ public class Turret extends SubsystemBase {
         turretMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, 10);
         turretMotor.enableVoltageCompensation(true);
         turretMotor.setNeutralMode(NeutralMode.Brake);
-
         turretMotor.configVoltageCompSaturation(12, 10);
         turretMotor.configNominalOutputForward(0.0, 10);
         turretMotor.configNominalOutputReverse(0.0, 10);
@@ -53,11 +51,7 @@ public class Turret extends SubsystemBase {
     }
 
     public synchronized void updateAngle() {
-        // calcuate the angle of the turret and add it to Tx
-        // double turretPos = (turretMotor.getSelectedSensorPosition(0)) / onedegree; //
-        // turret is at this degree
         double cameraAngle = RobotContainer.m_visionProcessor.getRotate(); // target is Tx degrees
-        double robotAngle = RobotContainer.m_robotDrive.getHeading(); // Angle in degrees robot is at
         double turretAngle = (turretMotor.getSelectedSensorPosition(0)) / onedegree; // turret is at this degree
 
         double rotateToTarget = (turretAngle - cameraAngle); // calc numberof degrees to target
@@ -79,15 +73,6 @@ public class Turret extends SubsystemBase {
         if (RobotContainer.m_shooter.findtarget)
             turretMotor.set(ControlMode.MotionMagic, requestedAngleInEnc); // turn turret to encoder value to find
                                                                            // target
-
-
-        SmartDashboard.putNumber("turret_toEncoderCount", toEncoderCount);
-        SmartDashboard.putNumber("turret_Angle", turretAngle);
-        SmartDashboard.putNumber("turret_Camera", cameraAngle);
-        SmartDashboard.putNumber("turret_Robot_Angle", robotAngle);
-        SmartDashboard.putNumber("turret_Rotateto", rotateToTarget);
-        SmartDashboard.putNumber("turret_Requested_angle_In_Enc", requestedAngleInEnc);
-        SmartDashboard.putNumber("turret_Requested_angle_In_Dec", requestedAngleInDegress);
     }
 
     public synchronized void resetTurret() {

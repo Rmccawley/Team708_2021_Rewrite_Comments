@@ -1,6 +1,5 @@
 package frc.team708.robot.subsystems;
 
-
 import frc.team708.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -10,7 +9,6 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
@@ -34,18 +32,69 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final Pigeon m_gyro = Pigeon.getInstance();
 
+
+  public static int speedCoeff = 6;
+  public int speedLevel = 2;
+
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getAngle());
+  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, Rotation2d.fromDegrees(getHeading()));
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
   }
 
+  public int getSpeedCoeff() {
+    return speedCoeff;
+  }
+
+  public void increaseSpeed() {
+    switch (speedLevel) {
+      case 0:
+        speedCoeff = 3;
+        break;
+      case 1:
+        speedCoeff = 6;
+        break;
+      case 2:
+        speedCoeff = 10;
+        break;
+      case 3:
+        speedCoeff = 30;
+        break;
+      case 4:
+        speedCoeff = 1;
+        break;
+    }
+    speedLevel = (speedLevel + 1) % 5;
+  }
+
+  public void decreaseSpeed() {
+    switch (speedLevel) {
+      case 0:
+        speedCoeff = 30;
+        break;
+      case 1:
+        speedCoeff = 1;
+        break;
+      case 2:
+        speedCoeff = 3;
+        break;
+      case 3:
+        speedCoeff = 6;
+        break;
+      case 4:
+        speedCoeff = 10;
+        break;
+    }
+    speedLevel = Math.floorMod((speedLevel - 1), 5);
+  }
+
+
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(new Rotation2d(getHeading()), m_frontLeft.getState(), m_rearLeft.getState(),
-        m_frontRight.getState(), m_rearRight.getState());
+    m_odometry.update(Rotation2d.fromDegrees(getHeading()), m_rearLeft.getState(), m_frontLeft.getState(),
+        m_rearRight.getState(), m_frontRight.getState());
   }
 
   /**
@@ -63,7 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(pose, m_gyro.getAngle());
+    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
   /**
@@ -131,7 +180,7 @@ public class DriveSubsystem extends SubsystemBase {
     return m_gyro.getRate();
   }
 
-  public Rotation2d getRotation(){
+  public Rotation2d getRotation() {
     return Rotation2d.fromDegrees(getHeading());
   }
 
@@ -144,13 +193,22 @@ public class DriveSubsystem extends SubsystemBase {
     // m_frontRight.getState().angle.getDegrees() % 360);
     // SmartDashboard.putNumber("State rad RR",
     // m_rearRight.getState().angle.getDegrees() % 360);
-    //SmartDashboard.putNumber("State m/s FL", m_frontLeft.getState().speedMetersPerSecond);
-    //SmartDashboard.putNumber("State m/s RL:", m_rearLeft.getState().speedMetersPerSecond);
-    //SmartDashboard.putNumber("State m/s FR", m_frontRight.getState().speedMetersPerSecond);
-    //SmartDashboard.putNumber("State m/s RR", m_rearRight.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("turn rate", getTurnRate());
+    // SmartDashboard.putNumber("State m/s FL",
+    // m_frontLeft.getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber("State m/s RL:",
+    // m_rearLeft.getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber("State m/s FR",
+    // m_frontRight.getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber("State m/s RR",
+    // m_rearRight.getState().speedMetersPerSecond);
+    //SmartDashboard.putNumber("turn rate", getTurnRate());
     SmartDashboard.putNumber("heading", getHeading());
-    //SmartDashboard.putNumber("heading2", m_gyro.getAngle().getDegrees());
+    SmartDashboard.putNumber("Drive Coeff", speedCoeff);
+
+    SmartDashboard.putNumber("pose x", getPose().getTranslation().getX());
+    SmartDashboard.putNumber("pose y", getPose().getTranslation().getY());
+    SmartDashboard.putNumber("pose hyp", getPose().getTranslation().getNorm());
+    SmartDashboard.putNumber("pose rot", getPose().getRotation().getDegrees());
     m_gyro.outputToSmartDashboard();
     m_frontLeft.sendToDashboard();
     m_rearLeft.sendToDashboard();

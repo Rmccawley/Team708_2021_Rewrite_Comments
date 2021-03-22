@@ -82,7 +82,7 @@ public class SwerveModule {
 
     // drivePIDController.setFeedbackDevice(driveEncoder);
     m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse);
-    m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse * .02057142);
+    m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderVelocityPerPulse * ModuleConstants.kVelocityModifier);
     m_driveEncoder.setPosition(0.0);
     m_driveMotor.setIdleMode(IdleMode.kCoast);
     // drivePIDController.setP(0.2);
@@ -125,7 +125,9 @@ public class SwerveModule {
     final var turnOutput = m_turningPIDController.calculate(getAngle(), state.angle.getRadians());
 
     // Calculate the turning motor output from the turning PID controller.
+    SmartDashboard.putNumber(modID + "driveOutput", driveOutput);
     m_driveMotor.set(driveOutput);
+    SmartDashboard.putNumber(modID + "turnOutput", turnOutput);
     m_turningMotor.set(TalonSRXControlMode.PercentOutput, turnOutput);
   }
 
@@ -139,8 +141,9 @@ public class SwerveModule {
     SmartDashboard.putNumber(modID + " drive pos", m_driveEncoder.getPosition());
     SmartDashboard.putNumber(modID + " drive vel", m_driveEncoder.getVelocity());
     SmartDashboard.putNumber(modID + " turn pos",
-    m_turningMotor.getSelectedSensorPosition(0) *
-    ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
+    ((m_turningMotor.getSelectedSensorPosition(0) * ModuleConstants.kTurningEncoderDistancePerPulse)
+    + (offset * Math.PI / 180))*180/Math.PI/360);
+    SmartDashboard.putNumber(modID + "state velocity", getState().speedMetersPerSecond);
     // SmartDashboard.putNumber(modID + " turn vel",
     // m_turningMotor.getSelectedSensorVelocity(0) *
     // ModuleConstants.kTurningEncoderDistancePerPulse *180/Math.PI);
