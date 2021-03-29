@@ -11,31 +11,26 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final int kFrontLeftDriveMotorPort = 13;
-    public static final int kRearLeftDriveMotorPort = 12;
-    public static final int kFrontRightDriveMotorPort = 14;
-    public static final int kRearRightDriveMotorPort = 11;
+    public static final int kFrontLeftDriveMotorPort = 12;
+    public static final int kRearLeftDriveMotorPort = 13;
+    public static final int kFrontRightDriveMotorPort = 11;
+    public static final int kRearRightDriveMotorPort = 14;
 
-    public static final int kFrontLeftTurningMotorPort = 17;
-    public static final int kRearLeftTurningMotorPort = 16;
-    public static final int kFrontRightTurningMotorPort = 18;
-    public static final int kRearRightTurningMotorPort = 15;
+    public static final int kFrontLeftTurningMotorPort = 16;
+    public static final int kRearLeftTurningMotorPort = 17;
+    public static final int kFrontRightTurningMotorPort = 15;
+    public static final int kRearRightTurningMotorPort = 18;
 
-    public static final boolean kFrontLeftTurningEncoderReversed = true;
-    public static final boolean kRearLeftTurningEncoderReversed = true;
-    public static final boolean kFrontRightTurningEncoderReversed = false;
-    public static final boolean kRearRightTurningEncoderReversed = false;
-
-    public static final boolean kFrontLeftDriveEncoderReversed = (RobotConstants.kRobot == 0) ? false : true;
-    public static final boolean kRearLeftDriveEncoderReversed = (RobotConstants.kRobot == 0) ? false : true;
-    public static final boolean kFrontRightDriveEncoderReversed = true;
-    public static final boolean kRearRightDriveEncoderReversed = true;
+    public static final boolean kFrontLeftDriveEncoderReversed = (RobotConstants.kRobot == 0) ? true : false;
+    public static final boolean kRearLeftDriveEncoderReversed = (RobotConstants.kRobot == 0) ? true : false;
+    public static final boolean kFrontRightDriveEncoderReversed = (RobotConstants.kRobot == 0) ? false : false;
+    public static final boolean kRearRightDriveEncoderReversed = (RobotConstants.kRobot == 0) ? false : false;
 
     // offset in degrees
-    public static final double kRearLeftOffset = (RobotConstants.kRobot == 0) ? -86 : 34.2;
-    public static final double kRearRightOffset = (RobotConstants.kRobot == 0) ? -125.5 : 93.2;
-    public static final double kFrontLeftOffset = (RobotConstants.kRobot == 0) ? -22.4 : 68.2;
-    public static final double kFrontRightOffset = (RobotConstants.kRobot == 0) ? -24.1 : 136.4;
+    public static final double kFrontLeftOffset = (RobotConstants.kRobot == 0) ? 86 : -34.2;
+    public static final double kFrontRightOffset = (RobotConstants.kRobot == 0) ? 125.5 : -93.2;
+    public static final double kRearLeftOffset = (RobotConstants.kRobot == 0) ? 22.4 : -68.2;
+    public static final double kRearRightOffset = (RobotConstants.kRobot == 0) ? 24.1 : -136.4;
 
     public static final double kTrackWidth = (RobotConstants.kRobot == 0) ? 0.6731 : 0.444;
     // Distance between centers of right and left wheels on robot
@@ -58,7 +53,7 @@ public final class Constants {
     public static final double kEncoderRatio = .119;
     public static final double kWheelDiameterMeters = 0.1;
     public static final double kDriveEncoderVelocityPerPulse = 0.00107063517;
-    public static final double kVelocityModifier = 0.85;
+    public static final double kVelocityModifier = (RobotConstants.kRobot == 0) ? 0.8 : 0.85;
     public static final double kDriveEncoderDistancePerPulse = ((kEncoderCPR * kEncoderRatio) / Math.PI
         * (kWheelDiameterMeters) / 3.056814908981323);
 
@@ -125,7 +120,7 @@ public final class Constants {
 
   public static final class TurretConstants {
 
-    public static final int kTurretMotor = 0;
+    public static final int kTurretMotor = 23;
 
     public static final int kTurretEncoderCount = 32768;
     public static final double kTurretEncoderStartingPos = -2614;

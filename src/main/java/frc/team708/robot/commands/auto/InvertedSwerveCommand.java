@@ -10,11 +10,11 @@ import frc.team708.robot.Constants.AutoConstants;
 import frc.team708.robot.Constants.DriveConstants;
 import frc.team708.robot.subsystems.DriveSubsystem;
 
-public class SwerveCommand extends SequentialCommandGroup {
+public class InvertedSwerveCommand extends SequentialCommandGroup {
 
     public DriveSubsystem m_DriveSubsystem;
 
-    public SwerveCommand(DriveSubsystem dSubsystem, Trajectory trajectory) {
+    public InvertedSwerveCommand(DriveSubsystem dSubsystem, Trajectory trajectory) {
        
         var thetaController = new ProfiledPIDController(0.25, 0, 0, AutoConstants.kThetaControllerConstraints);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -27,8 +27,10 @@ public class SwerveCommand extends SequentialCommandGroup {
                 dSubsystem::setModuleStates, dSubsystem);
 
         addCommands(
+                new InvertDriveCommand(dSubsystem),
                 new ResetDriveCommand(trajectory, dSubsystem),
-                swerveControllerCommand.andThen(() -> dSubsystem.drive(0, 0, 0, false)));
+                swerveControllerCommand.andThen(() -> dSubsystem.drive(0, 0, 0, false)),
+                new InvertDriveCommand(dSubsystem));
 
     }
 

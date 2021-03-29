@@ -124,6 +124,7 @@ public class Shooter extends SubsystemBase {
         findtarget = true;
         shooterPIDController.setReference(ShooterConstants.kShooterWheelSpeedLong, ControlType.kVelocity);
         shooterPIDController2.setReference(ShooterConstants.kShooterWheelSpeedLong, ControlType.kVelocity);
+        feederAutoShoot();
     }
 
     public void shootShort() {
@@ -132,6 +133,7 @@ public class Shooter extends SubsystemBase {
         findtarget = true;
         shooterPIDController.setReference(ShooterConstants.kShooterWheelSpeedShort, ControlType.kVelocity);
         shooterPIDController2.setReference(ShooterConstants.kShooterWheelSpeedShort, ControlType.kVelocity);
+        feederAutoShoot();
     }
 
     public boolean isShooterAtSpeed() {

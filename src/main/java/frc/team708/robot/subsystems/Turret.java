@@ -10,6 +10,7 @@ import frc.team708.robot.Constants.TurretConstants;
 import frc.team708.robot.RobotContainer;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
@@ -73,6 +74,15 @@ public class Turret extends SubsystemBase {
         if (RobotContainer.m_shooter.findtarget)
             turretMotor.set(ControlMode.MotionMagic, requestedAngleInEnc); // turn turret to encoder value to find
                                                                            // target
+
+        SmartDashboard.putBoolean("turret_SeesTarget", RobotContainer.m_visionProcessor.seesTarget());
+        SmartDashboard.putNumber("turret_toEncoderCount", toEncoderCount);
+        SmartDashboard.putNumber("turret_Angle", turretAngle);
+        SmartDashboard.putNumber("turret_Camera", cameraAngle);
+        //SmartDashboard.putNumber("turret_Robot_Angle", robotAngle);
+        SmartDashboard.putNumber("turret_Rotateto", rotateToTarget);
+        SmartDashboard.putNumber("turret_Requested_angle_In_Enc", requestedAngleInEnc);
+        SmartDashboard.putNumber("turret_Requested_angle_In_Dec", requestedAngleInDegress);
     }
 
     public synchronized void resetTurret() {

@@ -8,13 +8,16 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import frc.team708.robot.Constants.AutoConstants;
 import frc.team708.robot.Constants.DriveConstants;
+import frc.team708.robot.commands.intake.StartIntakeCommand;
+import frc.team708.robot.commands.intake.StopIntakeCommand;
 import frc.team708.robot.subsystems.DriveSubsystem;
+import frc.team708.robot.subsystems.Spinner;
 
-public class SwerveCommand extends SequentialCommandGroup {
+public class GalacticSearch extends SequentialCommandGroup {
 
-    public DriveSubsystem m_DriveSubsystem;
 
-    public SwerveCommand(DriveSubsystem dSubsystem, Trajectory trajectory) {
+
+    public GalacticSearch(DriveSubsystem dSubsystem, Spinner dSpinner, Trajectory trajectory) {
        
         var thetaController = new ProfiledPIDController(0.25, 0, 0, AutoConstants.kThetaControllerConstraints);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -28,7 +31,9 @@ public class SwerveCommand extends SequentialCommandGroup {
 
         addCommands(
                 new ResetDriveCommand(trajectory, dSubsystem),
-                swerveControllerCommand.andThen(() -> dSubsystem.drive(0, 0, 0, false)));
+                new StartIntakeCommand(dSpinner),
+                swerveControllerCommand.andThen(() -> dSubsystem.drive(0, 0, 0, false)),
+                new StopIntakeCommand(dSpinner));
 
     }
 

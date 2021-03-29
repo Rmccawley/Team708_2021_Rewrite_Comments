@@ -41,7 +41,7 @@ public class SwerveModule {
    * @param turningMotorChannel ID for the turning motor.
    */
   public SwerveModule(String modID, int driveMotorChannel, int turningMotorChannel, boolean driveEncoderReversed,
-      boolean turningEncoderReversed, double offset) {
+      double offset) {
     this.modID = modID;
     this.offset = offset;
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
@@ -63,7 +63,7 @@ public class SwerveModule {
   private void configureMotors() {
     m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
     m_turningMotor.setSensorPhase(true);
-    m_turningMotor.setInverted(false);
+    m_turningMotor.setInverted(true);
     m_turningMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, 10);
     m_turningMotor.enableVoltageCompensation(true);
     m_turningMotor.setNeutralMode(NeutralMode.Brake);
@@ -84,7 +84,7 @@ public class SwerveModule {
     m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderDistancePerPulse);
     m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderVelocityPerPulse * ModuleConstants.kVelocityModifier);
     m_driveEncoder.setPosition(0.0);
-    m_driveMotor.setIdleMode(IdleMode.kCoast);
+    m_driveMotor.setIdleMode(IdleMode.kBrake);
     // drivePIDController.setP(0.2);
     // drivePIDController.setI(0);
     // drivePIDController.setD(24);
@@ -135,6 +135,15 @@ public class SwerveModule {
   public void resetEncoders() {
     m_driveEncoder.setPosition(0);
     // m_turningMotor.setSelectedSensorPosition(0);
+  }
+
+  public void invertDrive(){
+    if (m_driveMotor.getInverted()){
+      m_driveMotor.setInverted(false);
+    }
+    else {
+      m_driveMotor.setInverted(true);
+    }
   }
 
   public void sendToDashboard() {

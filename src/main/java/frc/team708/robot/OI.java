@@ -113,8 +113,8 @@ public class OI {
 		rightBumperOperator.toggleWhenPressed(new StopIntakeCommand(m_spinner));
 		xButtonOperator.whenPressed(new RotateHopperCommand(m_hopper));
 		aButtonOperator.whileHeld(new ReverseIntakeCommand(m_spinner));
-		leftTriggerOperator.whenActive(new ShootLongCommand(m_shooter));
-		yButtonOperator.whenPressed(new ShootShortCommand(m_shooter));
+		leftTriggerOperator.whileActiveOnce(new ShootLongCommand(m_shooter));
+		yButtonOperator.whenHeld(new ShootShortCommand(m_shooter));
 		backButtonOperator.whileHeld(new ReverseFeederCommand(m_shooter));
 
 	}

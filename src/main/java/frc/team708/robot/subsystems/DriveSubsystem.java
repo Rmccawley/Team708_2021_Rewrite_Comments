@@ -1,6 +1,7 @@
 package frc.team708.robot.subsystems;
 
 import frc.team708.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -15,32 +16,36 @@ public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
   private final SwerveModule m_frontLeft = new SwerveModule("frontLeft", DriveConstants.kFrontLeftDriveMotorPort,
       DriveConstants.kFrontLeftTurningMotorPort, DriveConstants.kFrontLeftDriveEncoderReversed,
-      DriveConstants.kFrontLeftTurningEncoderReversed, DriveConstants.kFrontLeftOffset);
+      DriveConstants.kFrontLeftOffset);
 
   private final SwerveModule m_rearLeft = new SwerveModule("rearLeft", DriveConstants.kRearLeftDriveMotorPort,
       DriveConstants.kRearLeftTurningMotorPort, DriveConstants.kRearLeftDriveEncoderReversed,
-      DriveConstants.kRearLeftTurningEncoderReversed, DriveConstants.kRearLeftOffset);
+      DriveConstants.kRearLeftOffset);
 
   private final SwerveModule m_frontRight = new SwerveModule("frontRight", DriveConstants.kFrontRightDriveMotorPort,
       DriveConstants.kFrontRightTurningMotorPort, DriveConstants.kFrontRightDriveEncoderReversed,
-      DriveConstants.kFrontRightTurningEncoderReversed, DriveConstants.kFrontRightOffset);
+      DriveConstants.kFrontRightOffset);
 
   private final SwerveModule m_rearRight = new SwerveModule("rearRight", DriveConstants.kRearRightDriveMotorPort,
       DriveConstants.kRearRightTurningMotorPort, DriveConstants.kRearRightDriveEncoderReversed,
-      DriveConstants.kRearRightTurningEncoderReversed, DriveConstants.kRearRightOffset);
+      DriveConstants.kRearRightOffset);
 
   // The gyro sensor
   private final Pigeon m_gyro = Pigeon.getInstance();
 
+  public static int speedCoeff = 10;
+  public int speedLevel = 4;
 
-  public static int speedCoeff = 6;
-  public int speedLevel = 2;
+  private PIDController turnPID = new PIDController(15, 0, 0);
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, Rotation2d.fromDegrees(getHeading()));
+  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
+      Rotation2d.fromDegrees(getHeading()));
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    turnPID.enableContinuousInput(-Math.PI, Math.PI);
+    turnPID.setTolerance(0.02, 0.5);
   }
 
   public int getSpeedCoeff() {
@@ -56,10 +61,10 @@ public class DriveSubsystem extends SubsystemBase {
         speedCoeff = 6;
         break;
       case 2:
-        speedCoeff = 10;
+        speedCoeff = 8;
         break;
       case 3:
-        speedCoeff = 30;
+        speedCoeff = 10;
         break;
       case 4:
         speedCoeff = 1;
@@ -71,7 +76,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void decreaseSpeed() {
     switch (speedLevel) {
       case 0:
-        speedCoeff = 30;
+        speedCoeff = 10;
         break;
       case 1:
         speedCoeff = 1;
@@ -83,12 +88,11 @@ public class DriveSubsystem extends SubsystemBase {
         speedCoeff = 6;
         break;
       case 4:
-        speedCoeff = 10;
+        speedCoeff = 8;
         break;
     }
     speedLevel = Math.floorMod((speedLevel - 1), 5);
   }
-
 
   @Override
   public void periodic() {
@@ -126,6 +130,15 @@ public class DriveSubsystem extends SubsystemBase {
    */
   @SuppressWarnings("ParameterName")
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    if (rot == 0 && (xSpeed != 0 || ySpeed !=0)) {
+      rot = turnPID.calculate(m_gyro.getAngle().getRadians());
+    } else {
+      turnPID.setSetpoint(m_gyro.getAngle().getRadians());
+    }
+
+    SmartDashboard.putNumber("rot", rot);
+    SmartDashboard.putNumber("setpoint", turnPID.getSetpoint());
+
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getAngle())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
@@ -168,7 +181,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return (Math.floorMod((long) -m_gyro.getAngle().getDegrees(), (long) 360));
+    return (Math.floorMod((long) m_gyro.getAngle().getDegrees(), (long) 360));
   }
 
   /**
@@ -182,6 +195,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Rotation2d getRotation() {
     return Rotation2d.fromDegrees(getHeading());
+  }
+
+  public void invertDrive(){
+    m_frontLeft.invertDrive();
+    m_frontRight.invertDrive();
+    m_rearLeft.invertDrive();
+    m_rearRight.invertDrive();
   }
 
   public void sendToDashboard() {
@@ -201,7 +221,7 @@ public class DriveSubsystem extends SubsystemBase {
     // m_frontRight.getState().speedMetersPerSecond);
     // SmartDashboard.putNumber("State m/s RR",
     // m_rearRight.getState().speedMetersPerSecond);
-    //SmartDashboard.putNumber("turn rate", getTurnRate());
+    // SmartDashboard.putNumber("turn rate", getTurnRate());
     SmartDashboard.putNumber("heading", getHeading());
     SmartDashboard.putNumber("Drive Coeff", speedCoeff);
 
