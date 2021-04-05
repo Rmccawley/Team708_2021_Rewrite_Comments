@@ -16,7 +16,7 @@ public class SwerveCommand extends SequentialCommandGroup {
 
     public SwerveCommand(DriveSubsystem dSubsystem, Trajectory trajectory) {
        
-        var thetaController = new ProfiledPIDController(0.25, 0, 0, AutoConstants.kThetaControllerConstraints);
+        var thetaController = new ProfiledPIDController(0.5, 0, 0, AutoConstants.kThetaControllerConstraints);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, dSubsystem::getPose,

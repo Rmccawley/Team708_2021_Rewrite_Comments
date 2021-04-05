@@ -224,7 +224,6 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("turn rate", getTurnRate());
     SmartDashboard.putNumber("heading", getHeading());
     SmartDashboard.putNumber("Drive Coeff", speedCoeff);
-
     SmartDashboard.putNumber("pose x", getPose().getTranslation().getX());
     SmartDashboard.putNumber("pose y", getPose().getTranslation().getY());
     SmartDashboard.putNumber("pose hyp", getPose().getTranslation().getNorm());

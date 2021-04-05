@@ -8,15 +8,20 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import frc.team708.robot.Constants.AutoConstants;
 import frc.team708.robot.Constants.DriveConstants;
+import frc.team708.robot.commands.intake.StartIntakeCommand;
+import frc.team708.robot.commands.intake.StartIntakeOnceCommand;
+import frc.team708.robot.commands.intake.StopIntakeCommand;
+import frc.team708.robot.commands.intake.StopIntakeOnceCommand;
 import frc.team708.robot.subsystems.DriveSubsystem;
+import frc.team708.robot.subsystems.Spinner;
 
 public class InvertedSwerveCommand extends SequentialCommandGroup {
 
     public DriveSubsystem m_DriveSubsystem;
 
-    public InvertedSwerveCommand(DriveSubsystem dSubsystem, Trajectory trajectory) {
+    public InvertedSwerveCommand(DriveSubsystem dSubsystem, Spinner dSpinner, Trajectory trajectory) {
        
-        var thetaController = new ProfiledPIDController(0.25, 0, 0, AutoConstants.kThetaControllerConstraints);
+        var thetaController = new ProfiledPIDController(1, 0, 0, AutoConstants.kThetaControllerConstraints);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, dSubsystem::getPose,
@@ -27,9 +32,11 @@ public class InvertedSwerveCommand extends SequentialCommandGroup {
                 dSubsystem::setModuleStates, dSubsystem);
 
         addCommands(
+                new StartIntakeOnceCommand(dSpinner),
                 new InvertDriveCommand(dSubsystem),
                 new ResetDriveCommand(trajectory, dSubsystem),
                 swerveControllerCommand.andThen(() -> dSubsystem.drive(0, 0, 0, false)),
+                new StopIntakeOnceCommand(dSpinner),
                 new InvertDriveCommand(dSubsystem));
 
     }

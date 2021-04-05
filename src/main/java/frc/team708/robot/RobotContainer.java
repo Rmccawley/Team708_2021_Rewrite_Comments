@@ -14,6 +14,7 @@ import frc.team708.robot.commands.drive.CancelDriveCommand;
 import frc.team708.robot.commands.hopper.RotateHopperCommand;
 import frc.team708.robot.commands.hopper.StopHopperCommand;
 import frc.team708.robot.commands.intake.StartIntakeCommand;
+import frc.team708.robot.commands.intake.StopIntakeCommand;
 import frc.team708.robot.commands.shooter.ShooterPreloadCommand;
 import frc.team708.robot.commands.shooter.StopShooterCommand;
 import frc.team708.robot.commands.turret.UpdateAngleCommand;
@@ -62,7 +63,9 @@ public class RobotContainer {
     m_shooter.setDefaultCommand(new ShooterPreloadCommand(m_shooter));
     // m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
     m_turret.setDefaultCommand(new UpdateAngleCommand(m_turret));
+    // m_spinner.setDefaultCommand(new StopIntakeCommand(m_spinner));
     m_spinner.setDefaultCommand(new StartIntakeCommand(m_spinner));
+    // m_hopper.setDefaultCommand(new StopHopperCommand(m_hopper));
     m_hopper.setDefaultCommand(new RotateHopperCommand(m_hopper));
     m_robotDrive.setDefaultCommand(new RunCommand(
 
@@ -79,19 +82,19 @@ public class RobotContainer {
         new SwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
             List.of(new Translation2d(0, 0.5)), new Pose2d(0, 1, Rotation2d.fromDegrees(0)))));
     m_chooser.addOption("0 -> 1 in x invert",
-        new InvertedSwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+        new InvertedSwerveCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
             List.of(new Translation2d(0.5, 0)), new Pose2d(1, 0, Rotation2d.fromDegrees(0)))));
     m_chooser.addOption("0 -> 1 in y invert",
-        new InvertedSwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+        new InvertedSwerveCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
             List.of(new Translation2d(0, 0.5)), new Pose2d(0, 1, Rotation2d.fromDegrees(0)))));
     m_chooser.addOption("slalom path", new SwerveCommand(m_robotDrive, findTrajectory("slalom")));
     m_chooser.addOption("bounce path", new SwerveCommand(m_robotDrive, findTrajectory("bounce")));
-    m_chooser.addOption("bounce invert", new InvertedSwerveCommand(m_robotDrive, findTrajectory("bounce")));
+    m_chooser.addOption("bounce invert", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("bounce")));
     m_chooser.addOption("barrel path", new SwerveCommand(m_robotDrive, findTrajectory("barrel")));
-    m_chooser.addOption("search A red", new SwerveCommand(m_robotDrive, findTrajectory("searchAred")));
-    m_chooser.addOption("search A blue", new SwerveCommand(m_robotDrive, findTrajectory("searchAblue")));
-    m_chooser.addOption("search B red", new SwerveCommand(m_robotDrive, findTrajectory("searchBred")));
-    m_chooser.addOption("search B blue", new SwerveCommand(m_robotDrive, findTrajectory("searchBblue")));
+    m_chooser.addOption("search A red", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchAred")));
+    m_chooser.addOption("search A blue", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchAblue")));
+    m_chooser.addOption("search B red", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchBred")));
+    m_chooser.addOption("search B blue", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchBblue")));
     SmartDashboard.putData("Auto Chooser", m_chooser);
 
   }
@@ -137,6 +140,8 @@ public class RobotContainer {
 
   public void sendToDashboard() {
     m_robotDrive.sendToDashboard();
+    m_shooter.sendToDashboard();
+    SmartDashboard.putData(m_shooter);
     // SmartDashboard.putNumber("LX", 25 * OI.getDriverX(GenericHID.Hand.kLeft));
     // SmartDashboard.putData("reset Gyro", new resetGyroCommand(m_robotDrive));
     // SmartDashboard.putData("turn to 0", new turnToCommand(0, m_robotDrive));
@@ -144,6 +149,6 @@ public class RobotContainer {
     // SmartDashboard.putData("turn to 180", new turnToCommand(180, m_robotDrive));
     // SmartDashboard.putData("turn to 270", new turnToCommand(270, m_robotDrive));
     // SmartDashboard.putData("Cancel", new cancelDriveCommand(m_robotDrive));
-    // SmartDashboard.putData(m_robotDrive);
+    SmartDashboard.putData(m_robotDrive);
   }
 }

@@ -13,7 +13,7 @@ public class ShooterPreloadCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         m_shooter.feederPreLoad();
         m_shooter.stopShooter();
     }

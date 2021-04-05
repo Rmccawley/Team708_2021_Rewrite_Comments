@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 public final class Constants {
 
   public static final class RobotConstants {
-    public static final int kRobot = 1; // snowflake = 1, competition = 0
+    public static final int kRobot = 0; // snowflake = 1, competition = 0
   }
 
   public static final class DriveConstants {
@@ -29,7 +29,7 @@ public final class Constants {
     // offset in degrees
     public static final double kFrontLeftOffset = (RobotConstants.kRobot == 0) ? 86 : -34.2;
     public static final double kFrontRightOffset = (RobotConstants.kRobot == 0) ? 125.5 : -93.2;
-    public static final double kRearLeftOffset = (RobotConstants.kRobot == 0) ? 22.4 : -68.2;
+    public static final double kRearLeftOffset = (RobotConstants.kRobot == 0) ? 30.5 : -68.2;
     public static final double kRearRightOffset = (RobotConstants.kRobot == 0) ? 24.1 : -136.4;
 
     public static final double kTrackWidth = (RobotConstants.kRobot == 0) ? 0.6731 : 0.444;

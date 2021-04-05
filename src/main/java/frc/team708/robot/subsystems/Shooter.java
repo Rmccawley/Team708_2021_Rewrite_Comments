@@ -94,10 +94,13 @@ public class Shooter extends SubsystemBase {
     }
 
     public void feederPreLoad() {
-        if (analogSensor.getPosition() > 1.3 && preloaded == false) {
+        if (analogSensor.getPosition() < 1.1){
+            preloaded = false;
+        }
+        if (analogSensor.getPosition() > 1.1 && preloaded == false) {
             feederMotor.set(0);
             preloaded = true;
-            feederUnload();
+            //feederUnload();
         } else if (!preloaded)
             feederMotor.set(0.4);
 
@@ -165,7 +168,7 @@ public class Shooter extends SubsystemBase {
         // SmartDashboard.putNumber("Shooter1 velocity", shooterEncoder.getVelocity());
         // SmartDashboard.putNumber("Shooter2 velocity", shooterEncoder2.getVelocity());
         // SmartDashboard.putNumber("Shooter target speed", targetSpeed);
-        // SmartDashboard.putNumber("Feeder Has Ball", analogSensor.getPosition());
+        SmartDashboard.putNumber("Feeder Has Ball", analogSensor.getPosition());
         // SmartDashboard.putNumber("Feeder Motor Temp",
         // feederMotor.getMotorTemperature());
         SmartDashboard.putBoolean("Shooter Target Speed Achieved", isShooterAtSpeed());
