@@ -94,10 +94,10 @@ public class Shooter extends SubsystemBase {
     }
 
     public void feederPreLoad() {
-        if (analogSensor.getPosition() < 1.1){
+        if (analogSensor.getPosition() < 1.0){
             preloaded = false;
         }
-        if (analogSensor.getPosition() > 1.1 && preloaded == false) {
+        if (analogSensor.getPosition() > 1.0 && preloaded == false) {
             feederMotor.set(0);
             preloaded = true;
             //feederUnload();

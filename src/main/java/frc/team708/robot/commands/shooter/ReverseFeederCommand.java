@@ -13,12 +13,12 @@ public class ReverseFeederCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         m_shooter.feederUnload();
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 }

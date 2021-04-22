@@ -60,13 +60,13 @@ public class RobotContainer {
     OI.configureButtonBindings(m_robotDrive, m_hopper, m_spinner, m_shooter, m_turret, m_visionProcessor);
 
     // Configure default commands
-    m_shooter.setDefaultCommand(new ShooterPreloadCommand(m_shooter));
-    // m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
+    //m_shooter.setDefaultCommand(new ShooterPreloadCommand(m_shooter));
+    m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
     m_turret.setDefaultCommand(new UpdateAngleCommand(m_turret));
-    // m_spinner.setDefaultCommand(new StopIntakeCommand(m_spinner));
-    m_spinner.setDefaultCommand(new StartIntakeCommand(m_spinner));
-    // m_hopper.setDefaultCommand(new StopHopperCommand(m_hopper));
-    m_hopper.setDefaultCommand(new RotateHopperCommand(m_hopper));
+    m_spinner.setDefaultCommand(new StopIntakeCommand(m_spinner));
+    //m_spinner.setDefaultCommand(new StartIntakeCommand(m_spinner));
+    m_hopper.setDefaultCommand(new StopHopperCommand(m_hopper));
+    //m_hopper.setDefaultCommand(new RotateHopperCommand(m_hopper));
     m_robotDrive.setDefaultCommand(new RunCommand(
 
         () -> m_robotDrive.drive(-m_robotDrive.getSpeedCoeff() * OI.getDriverY(GenericHID.Hand.kLeft),

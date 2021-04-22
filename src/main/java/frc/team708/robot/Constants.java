@@ -84,9 +84,9 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
 
-    public static final double kDriverDeadBandLeftX = 0.2;
+    public static final double kDriverDeadBandLeftX = 0.1;
     public static final double kDriverDeadBandRightX = 0.2;
-    public static final double kDriverDeadBandLeftY = 0.2;
+    public static final double kDriverDeadBandLeftY = 0.1;
     public static final double kDriverDeadBandRightY = 0.2;
   }
 

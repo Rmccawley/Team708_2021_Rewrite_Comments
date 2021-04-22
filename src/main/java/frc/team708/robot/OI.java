@@ -42,6 +42,7 @@ public class OI {
 	public static final JoystickButton yButtonDriver = new JoystickButton(driverGamepad, Button.kY.value);
 	public static final JoystickButton backButtonDriver = new JoystickButton(driverGamepad, Button.kBack.value);
 	public static final JoystickButton l3ButtonDriver = new JoystickButton(driverGamepad, Button.kStickLeft.value);
+	public static final JoystickButton rBumperDriver = new JoystickButton(driverGamepad, Button.kBumperRight.value);
 	public static final DPadButton dPadUpDriver = new DPadButton(driverGamepad, Direction.UP);
 	public static final DPadButton dPadDownDriver = new DPadButton(driverGamepad, Direction.DOWN);
 
@@ -99,11 +100,18 @@ public class OI {
 
 		// Driver button commands
 		backButtonDriver.whenPressed(new ResetGyroCommand(m_robotDrive));
-		aButtonDriver.whenPressed(new TurnToCommand(180, m_robotDrive));
-		bButtonDriver.whenPressed(new TurnToCommand(270, m_robotDrive));
-		xButtonDriver.whenPressed(new TurnToCommand(90, m_robotDrive));
-		yButtonDriver.whenPressed(new TurnToCommand(0, m_robotDrive));
+		// aButtonDriver.whenPressed(new TurnToCommand(180, m_robotDrive));
+		// bButtonDriver.whenPressed(new TurnToCommand(270, m_robotDrive));
+		// xButtonDriver.whenPressed(new TurnToCommand(90, m_robotDrive));
+		// yButtonDriver.whenPressed(new TurnToCommand(0, m_robotDrive));
 		l3ButtonDriver.whenPressed(new CancelDriveCommand(m_robotDrive));
+		rBumperDriver.whileHeld(new ReverseFeederCommand(m_shooter));
+
+		aButtonDriver.whenHeld(new ShootShortCommand(m_shooter));
+		bButtonDriver.whenHeld(new ShootShortCommand(m_shooter));
+		xButtonDriver.whenHeld(new ShootLongCommand(m_shooter));
+		yButtonDriver.whenHeld(new ShootLongCommand(m_shooter));
+
 
 		dPadUpDriver.whenPressed(new IncreaseSpeedCommand(m_robotDrive));
 		dPadDownDriver.whenPressed(new DecreaseSpeedCommand(m_robotDrive));
