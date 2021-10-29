@@ -6,6 +6,9 @@ import frc.team708.robot.commands.drive.*;
 import frc.team708.robot.commands.hopper.RotateHopperCommand;
 import frc.team708.robot.commands.intake.ReverseIntakeCommand;
 import frc.team708.robot.commands.intake.StopIntakeCommand;
+import frc.team708.robot.commands.intake.ToColorCommand;
+import frc.team708.robot.commands.intake.ToHangerCommand;
+import frc.team708.robot.commands.intake.ToIntakeCommand;
 import frc.team708.robot.commands.shooter.ReverseFeederCommand;
 import frc.team708.robot.commands.shooter.ShootLongCommand;
 import frc.team708.robot.commands.shooter.ShootShortCommand;
@@ -52,6 +55,9 @@ public class OI {
 	public static final JoystickButton yButtonOperator = new JoystickButton(operatorGamepad, Button.kY.value);
 	public static final JoystickButton backButtonOperator = new JoystickButton(operatorGamepad, Button.kBack.value);
 	public static final JoystickButton rightBumperOperator = new JoystickButton(operatorGamepad, Button.kBumperRight.value);
+	public static final DPadButton dPadUpOperator = new DPadButton(operatorGamepad, Direction.UP);
+	public static final DPadButton dPadRightOperator = new DPadButton(operatorGamepad, Direction.RIGHT);
+	public static final DPadButton dPadDownOperator = new DPadButton(operatorGamepad, Direction.DOWN);
 
 	public static final AxisUp leftTriggerOperator = new AxisUp(operatorGamepad, Axis.kLeftTrigger.value);
 
@@ -124,6 +130,9 @@ public class OI {
 		leftTriggerOperator.whileActiveOnce(new ShootLongCommand(m_shooter));
 		yButtonOperator.whenHeld(new ShootShortCommand(m_shooter));
 		backButtonOperator.whileHeld(new ReverseFeederCommand(m_shooter));
+		dPadDownOperator.whenPressed(new ToIntakeCommand(m_spinner, m_hopper, m_shooter));
+		dPadRightOperator.whenPressed(new ToColorCommand(m_spinner));
+		dPadUpOperator.whenPressed(new ToHangerCommand(m_spinner));
 
 	}
 }

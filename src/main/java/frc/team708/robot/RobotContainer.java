@@ -1,5 +1,11 @@
 package frc.team708.robot;
 
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.MjpegServer;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode.PixelFormat;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -13,6 +19,7 @@ import frc.team708.robot.commands.auto.SwerveCommand;
 import frc.team708.robot.commands.drive.CancelDriveCommand;
 import frc.team708.robot.commands.hopper.RotateHopperCommand;
 import frc.team708.robot.commands.hopper.StopHopperCommand;
+import frc.team708.robot.commands.intake.InitIntakeCommand;
 import frc.team708.robot.commands.intake.StartIntakeCommand;
 import frc.team708.robot.commands.intake.StopIntakeCommand;
 import frc.team708.robot.commands.shooter.ShooterPreloadCommand;
@@ -42,6 +49,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+
 public class RobotContainer {
   // The robot's subsystems
   public static final DriveSubsystem m_robotDrive = new DriveSubsystem();
@@ -57,16 +67,17 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
+    CameraServer.getInstance().startAutomaticCapture();
+
     OI.configureButtonBindings(m_robotDrive, m_hopper, m_spinner, m_shooter, m_turret, m_visionProcessor);
 
     // Configure default commands
-    //m_shooter.setDefaultCommand(new ShooterPreloadCommand(m_shooter));
-    m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
+    m_shooter.setDefaultCommand(new ShooterPreloadCommand(m_shooter));
+    // m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
     m_turret.setDefaultCommand(new UpdateAngleCommand(m_turret));
-    m_spinner.setDefaultCommand(new StopIntakeCommand(m_spinner));
-    //m_spinner.setDefaultCommand(new StartIntakeCommand(m_spinner));
+    // m_spinner.setDefaultCommand(new StartIntakeCommand(m_spinner));
+    m_spinner.setDefaultCommand(new InitIntakeCommand(m_spinner));
     m_hopper.setDefaultCommand(new StopHopperCommand(m_hopper));
-    //m_hopper.setDefaultCommand(new RotateHopperCommand(m_hopper));
     m_robotDrive.setDefaultCommand(new RunCommand(
 
         () -> m_robotDrive.drive(-m_robotDrive.getSpeedCoeff() * OI.getDriverY(GenericHID.Hand.kLeft),
@@ -91,10 +102,14 @@ public class RobotContainer {
     m_chooser.addOption("bounce path", new SwerveCommand(m_robotDrive, findTrajectory("bounce")));
     m_chooser.addOption("bounce invert", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("bounce")));
     m_chooser.addOption("barrel path", new SwerveCommand(m_robotDrive, findTrajectory("barrel")));
-    m_chooser.addOption("search A red", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchAred")));
-    m_chooser.addOption("search A blue", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchAblue")));
-    m_chooser.addOption("search B red", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchBred")));
-    m_chooser.addOption("search B blue", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchBblue")));
+    m_chooser.addOption("search A red",
+        new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchAred")));
+    m_chooser.addOption("search A blue",
+        new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchAblue")));
+    m_chooser.addOption("search B red",
+        new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchBred")));
+    m_chooser.addOption("search B blue",
+        new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchBblue")));
     SmartDashboard.putData("Auto Chooser", m_chooser);
 
   }
@@ -141,6 +156,7 @@ public class RobotContainer {
   public void sendToDashboard() {
     m_robotDrive.sendToDashboard();
     m_shooter.sendToDashboard();
+    m_spinner.sendToDashboard();
     SmartDashboard.putData(m_shooter);
     // SmartDashboard.putNumber("LX", 25 * OI.getDriverX(GenericHID.Hand.kLeft));
     // SmartDashboard.putData("reset Gyro", new resetGyroCommand(m_robotDrive));

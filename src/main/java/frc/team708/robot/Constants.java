@@ -138,4 +138,14 @@ public final class Constants {
     public static final int kVisionLedOff = 1;
 
   }
+
+  public static final class IntakeConstants {
+
+    public static final int armCam0 = 4;
+    public static final int armCam1 = 5;
+    public static final int armPivot0 = 6;
+    public static final int armPivot1 = 7;
+    public static final int hangerEngage = 1;
+
+  }
 }
