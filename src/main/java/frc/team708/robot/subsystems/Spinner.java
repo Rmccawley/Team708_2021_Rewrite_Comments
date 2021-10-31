@@ -103,7 +103,14 @@ public class Spinner extends SubsystemBase {
         spinnerMotor.set(SpinnerConstants.kIntakeSpeed);
     }
 
+    //Causing some unwanted solenoid shifts
     public void reverseIntake() {
+        unlockHanger();
+        pistonRetract();
+        camSolenoid.set(DoubleSolenoid.Value.kForward); // I
+        pivotSolenoid.set(DoubleSolenoid.Value.kReverse); // O
+        inHangerPosition = false;
+        inIntakePosition = true;
         spinnerMotor.set(-SpinnerConstants.kIntakeSpeed);
     }
 
@@ -129,7 +136,7 @@ public class Spinner extends SubsystemBase {
 
 
     public void toHanger() {
-        if (Timer.getMatchTime() <= 35) {
+        // if (Timer.getMatchTime() <= 35) {
             StopMotorIntake();
             pistonRetract();
             camSolenoid.set(DoubleSolenoid.Value.kForward); // I
@@ -138,7 +145,7 @@ public class Spinner extends SubsystemBase {
             inHangerPosition = true;
             inIntakePosition = false;
             resetSpinnerEncoder();
-        }
+        // }
     }
 
     public void toColor() {
@@ -242,6 +249,8 @@ public class Spinner extends SubsystemBase {
     }
 
     public void sendToDashboard() {
+        SmartDashboard.putBoolean("inHangerPosition", inHangerPosition);
+
         SmartDashboard.putBoolean("Hanger extended", !notExtended());
         SmartDashboard.putBoolean("Hanger retracted", !notRetracted());
         SmartDashboard.putNumber("FMS Match Time", Timer.getMatchTime());

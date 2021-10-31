@@ -4,6 +4,8 @@ import frc.team708.robot.Constants.ControllerConstants;
 import frc.team708.robot.commands.StopAllCommand;
 import frc.team708.robot.commands.drive.*;
 import frc.team708.robot.commands.hopper.RotateHopperCommand;
+import frc.team708.robot.commands.intake.ExtendHangerCommand;
+import frc.team708.robot.commands.intake.RetractHangerCommand;
 import frc.team708.robot.commands.intake.ReverseIntakeCommand;
 import frc.team708.robot.commands.intake.StopIntakeCommand;
 import frc.team708.robot.commands.intake.ToColorCommand;
@@ -53,8 +55,10 @@ public class OI {
 	public static final JoystickButton leftBumperOperator = new JoystickButton(operatorGamepad, Button.kBumperLeft.value);
 	public static final JoystickButton aButtonOperator = new JoystickButton(operatorGamepad, Button.kA.value);
 	public static final JoystickButton yButtonOperator = new JoystickButton(operatorGamepad, Button.kY.value);
+	public static final JoystickButton bButtonOperator = new JoystickButton(operatorGamepad, Button.kB.value);
 	public static final JoystickButton backButtonOperator = new JoystickButton(operatorGamepad, Button.kBack.value);
 	public static final JoystickButton rightBumperOperator = new JoystickButton(operatorGamepad, Button.kBumperRight.value);
+	public static final JoystickButton startButtonOperator = new JoystickButton(operatorGamepad, Button.kStart.value);
 	public static final DPadButton dPadUpOperator = new DPadButton(operatorGamepad, Direction.UP);
 	public static final DPadButton dPadRightOperator = new DPadButton(operatorGamepad, Direction.RIGHT);
 	public static final DPadButton dPadDownOperator = new DPadButton(operatorGamepad, Direction.DOWN);
@@ -98,7 +102,22 @@ public class OI {
 		} else {
 			return deadBand(driverGamepad.getY(Hand.kRight), ControllerConstants.kDriverDeadBandRightY);
 		}
+	}
 
+	// public static double getOperatorX(Hand hand) {
+	// 	if (hand.equals(Hand.kLeft)) {
+	// 		return deadBand(operatorGamepad.getX(Hand.kLeft), ControllerConstants.kDriverDeadBandLeftX);
+	// 	} else {
+	// 		return deadBand(operatorGamepad.getX(Hand.kRight), ControllerConstants.kDriverDeadBandRightX);
+	// 	}
+	// }
+
+	public static double getOperatorY(Hand hand) {
+		if (hand.equals(Hand.kLeft)) {
+			return deadBand(operatorGamepad.getY(Hand.kLeft), ControllerConstants.kDriverDeadBandLeftY);
+		} else {
+			return deadBand(operatorGamepad.getY(Hand.kRight), ControllerConstants.kDriverDeadBandRightY);
+		}
 	}
 
 	public static void configureButtonBindings(DriveSubsystem m_robotDrive, Hopper m_hopper, Spinner m_spinner,
@@ -113,10 +132,10 @@ public class OI {
 		l3ButtonDriver.whenPressed(new CancelDriveCommand(m_robotDrive));
 		rBumperDriver.whileHeld(new ReverseFeederCommand(m_shooter));
 
-		aButtonDriver.whenHeld(new ShootShortCommand(m_shooter));
-		bButtonDriver.whenHeld(new ShootShortCommand(m_shooter));
-		xButtonDriver.whenHeld(new ShootLongCommand(m_shooter));
-		yButtonDriver.whenHeld(new ShootLongCommand(m_shooter));
+		aButtonDriver.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); //CHANGED WITH ShootShortCommand
+		bButtonDriver.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); //CHANGED WITH ShootShortCommand
+		xButtonDriver.whenHeld(new ShootLongCommand(m_shooter, m_spinner)); //CHANGED WITH ShootLongCommand
+		yButtonDriver.whenHeld(new ShootLongCommand(m_shooter, m_spinner)); //CHANGED WITH ShootLongCommand
 
 
 		dPadUpDriver.whenPressed(new IncreaseSpeedCommand(m_robotDrive));
@@ -124,12 +143,31 @@ public class OI {
 
 		// Operator button commands
 		leftBumperOperator.whileHeld(new StopAllCommand(m_shooter, m_spinner, m_hopper));
+
 		rightBumperOperator.toggleWhenPressed(new StopIntakeCommand(m_spinner));
+
+		//WORKING
 		xButtonOperator.whenPressed(new RotateHopperCommand(m_hopper));
+
+		//WORKING
 		aButtonOperator.whileHeld(new ReverseIntakeCommand(m_spinner));
-		leftTriggerOperator.whileActiveOnce(new ShootLongCommand(m_shooter));
-		yButtonOperator.whenHeld(new ShootShortCommand(m_shooter));
+		aButtonOperator.whenReleased(new ReverseIntakeCommand(m_spinner));
+
+		bButtonOperator.whileHeld(new ExtendHangerCommand(m_spinner));
+		startButtonOperator.whileHeld(new RetractHangerCommand(m_spinner));
+		
+		bButtonOperator.whenReleased(new StopIntakeCommand(m_spinner));
+		startButtonOperator.whenReleased(new StopIntakeCommand(m_spinner));
+
+		leftTriggerOperator.whileActiveOnce(new ShootLongCommand(m_shooter, m_spinner)); //CHANGED WITH ShootLongCommand
+		//TODO ADD whenReleased command to automate dropping
+
+		yButtonOperator.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); //CHANGED WITH ShootShortCommand
+
+		//WORKING
 		backButtonOperator.whileHeld(new ReverseFeederCommand(m_shooter));
+
+		//WORKING
 		dPadDownOperator.whenPressed(new ToIntakeCommand(m_spinner, m_hopper, m_shooter));
 		dPadRightOperator.whenPressed(new ToColorCommand(m_spinner));
 		dPadUpOperator.whenPressed(new ToHangerCommand(m_spinner));
