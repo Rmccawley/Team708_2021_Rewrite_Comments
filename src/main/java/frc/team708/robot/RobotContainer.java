@@ -75,7 +75,7 @@ public class RobotContainer {
     m_shooter.setDefaultCommand(new ShooterPreloadCommand(m_shooter));
     // m_shooter.setDefaultCommand(new StopShooterCommand(m_shooter));
     m_turret.setDefaultCommand(new UpdateAngleCommand(m_turret));
-    // m_spinner.setDefaultCommand(new StartIntakeCommand(m_spinner));
+    // m_spinner.setDefaultCommand(new (m_spinner));
     m_spinner.setDefaultCommand(new InitIntakeCommand(m_spinner));
     m_hopper.setDefaultCommand(new StopHopperCommand(m_hopper));
     m_robotDrive.setDefaultCommand(new RunCommand(
@@ -86,30 +86,21 @@ public class RobotContainer {
         m_robotDrive));
 
     m_chooser.setDefaultOption("nothing", new CancelDriveCommand(m_robotDrive));
-    m_chooser.addOption("0 -> 1 in x",
-        new SwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-            List.of(new Translation2d(0.5, 0)), new Pose2d(1, 0, Rotation2d.fromDegrees(0)))));
-    m_chooser.addOption("0 -> 1 in y",
-        new SwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-            List.of(new Translation2d(0, 0.5)), new Pose2d(0, 1, Rotation2d.fromDegrees(0)))));
-    m_chooser.addOption("0 -> 1 in x invert",
+    // m_chooser.addOption("0 -> 1 in x",
+    //     new SwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+    //         List.of(new Translation2d(0.5, 0)), new Pose2d(1, 0, Rotation2d.fromDegrees(0)))));
+    // m_chooser.addOption("0 -> 1 in y",
+    //     new SwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+    //         List.of(new Translation2d(0, 0.5)), new Pose2d(0, 1, Rotation2d.fromDegrees(0)))));
+    // m_chooser.addOption("0 -> 1 in x invert",
+    //     new InvertedSwerveCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+    //         List.of(new Translation2d(0.5, 0)), new Pose2d(1, 0, Rotation2d.fromDegrees(0)))));
+    m_chooser.addOption("driveoffline",
         new InvertedSwerveCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-            List.of(new Translation2d(0.5, 0)), new Pose2d(1, 0, Rotation2d.fromDegrees(0)))));
-    m_chooser.addOption("0 -> 1 in y invert",
-        new InvertedSwerveCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
             List.of(new Translation2d(0, 0.5)), new Pose2d(0, 1, Rotation2d.fromDegrees(0)))));
-    m_chooser.addOption("slalom path", new SwerveCommand(m_robotDrive, findTrajectory("slalom")));
-    m_chooser.addOption("bounce path", new SwerveCommand(m_robotDrive, findTrajectory("bounce")));
-    m_chooser.addOption("bounce invert", new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("bounce")));
-    m_chooser.addOption("barrel path", new SwerveCommand(m_robotDrive, findTrajectory("barrel")));
-    m_chooser.addOption("search A red",
-        new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchAred")));
-    m_chooser.addOption("search A blue",
-        new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchAblue")));
-    m_chooser.addOption("search B red",
-        new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchBred")));
-    m_chooser.addOption("search B blue",
-        new InvertedSwerveCommand(m_robotDrive, m_spinner, findTrajectory("searchBblue")));
+    m_chooser.addOption("3 Ball Auto",
+        new ThreeBallAuto(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+            List.of(new Translation2d(0, 0.5)), new Pose2d(0, 3, Rotation2d.fromDegrees(0)))));
     SmartDashboard.putData("Auto Chooser", m_chooser);
 
   }

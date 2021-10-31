@@ -14,7 +14,8 @@ public class InitIntakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        m_spinner.toColorFromIntake();
+        // m_spinner.toColorFromIntake();
+        m_spinner.toIntake();
     }
 
     @Override
