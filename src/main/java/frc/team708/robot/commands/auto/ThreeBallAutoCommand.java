@@ -12,14 +12,17 @@ import frc.team708.robot.commands.intake.StartIntakeCommand;
 import frc.team708.robot.commands.intake.StartIntakeOnceCommand;
 import frc.team708.robot.commands.intake.StopIntakeCommand;
 import frc.team708.robot.commands.intake.StopIntakeOnceCommand;
+import frc.team708.robot.commands.shooter.ShootAutoCommand;
+
 import frc.team708.robot.subsystems.DriveSubsystem;
 import frc.team708.robot.subsystems.Spinner;
+import frc.team708.robot.subsystems.Shooter;
 
 public class ThreeBallAutoCommand extends SequentialCommandGroup {
 
     public DriveSubsystem m_DriveSubsystem;
 
-    public ThreeBallAutoCommand(DriveSubsystem dSubsystem, Spinner dSpinner, Trajectory trajectory) {
+    public ThreeBallAutoCommand(DriveSubsystem dSubsystem, Spinner dSpinner, Trajectory trajectory, Shooter dshooter) {
        
         var thetaController = new ProfiledPIDController(1, 0, 0, AutoConstants.kThetaControllerConstraints);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -38,7 +41,7 @@ public class ThreeBallAutoCommand extends SequentialCommandGroup {
                 swerveControllerCommand.andThen(() -> dSubsystem.drive(0, 0, 0, false)),
                 new StopIntakeOnceCommand(dSpinner),
                 new InvertDriveCommand(dSubsystem));
-                new shootAutoCommand();
+                new ShootAutoCommand(dshooter,dSpinner);
 
     }
 

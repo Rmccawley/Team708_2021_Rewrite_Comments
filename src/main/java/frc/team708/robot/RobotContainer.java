@@ -31,6 +31,7 @@ import frc.team708.robot.subsystems.Spinner;
 import frc.team708.robot.subsystems.Shooter;
 import frc.team708.robot.subsystems.Turret;
 import frc.team708.robot.subsystems.VisionProcessor;
+import frc.team708.robot.commands.auto.ThreeBallAutoCommand;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -85,7 +86,7 @@ public class RobotContainer {
             -m_robotDrive.getSpeedCoeff() * 25 / 10 * OI.getDriverX(GenericHID.Hand.kRight), true),
         m_robotDrive));
 
-    m_chooser.setDefaultOption("nothing", new CancelDriveCommand(m_robotDrive));
+
     // m_chooser.addOption("0 -> 1 in x",
     //     new SwerveCommand(m_robotDrive, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
     //         List.of(new Translation2d(0.5, 0)), new Pose2d(1, 0, Rotation2d.fromDegrees(0)))));
@@ -95,16 +96,18 @@ public class RobotContainer {
     // m_chooser.addOption("0 -> 1 in x invert",
     //     new InvertedSwerveCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
     //         List.of(new Translation2d(0.5, 0)), new Pose2d(1, 0, Rotation2d.fromDegrees(0)))));
-    m_chooser.addOption("driveoffline",
-        new InvertedSwerveCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-            List.of(new Translation2d(0, 0.5)), new Pose2d(0, 1, Rotation2d.fromDegrees(0)))));
+
+    // m_chooser.setDefaultOption("nothing", new CancelDriveCommand(m_robotDrive));
+
     m_chooser.addOption("3 Ball Auto",
-        new ThreeBallAuto(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-            List.of(new Translation2d(0, 0.5)), new Pose2d(0, 3, Rotation2d.fromDegrees(0)))));
+        new ThreeBallAutoCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+            List.of(new Translation2d(0, 0.5)), new Pose2d(0, 1, Rotation2d.fromDegrees(0))), m_shooter));
+    m_chooser.setDefaultOption("driveoffline",
+        new InvertedSwerveCommand(m_robotDrive, m_spinner, createTrejectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+            List.of(new Translation2d(0, 0.5)), new Pose2d(4, 0, Rotation2d.fromDegrees(0)))));
     SmartDashboard.putData("Auto Chooser", m_chooser);
-
   }
-
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

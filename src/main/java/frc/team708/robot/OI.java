@@ -125,17 +125,17 @@ public class OI {
 
 		// Driver button commands
 		backButtonDriver.whenPressed(new ResetGyroCommand(m_robotDrive));
-		// aButtonDriver.whenPressed(new TurnToCommand(180, m_robotDrive));
-		// bButtonDriver.whenPressed(new TurnToCommand(270, m_robotDrive));
-		// xButtonDriver.whenPressed(new TurnToCommand(90, m_robotDrive));
-		// yButtonDriver.whenPressed(new TurnToCommand(0, m_robotDrive));
+		aButtonDriver.whenPressed(new TurnToCommand(180, m_robotDrive));
+		bButtonDriver.whenPressed(new TurnToCommand(270, m_robotDrive));
+		xButtonDriver.whenPressed(new TurnToCommand(90, m_robotDrive));
+		yButtonDriver.whenPressed(new TurnToCommand(0, m_robotDrive));
 		l3ButtonDriver.whenPressed(new CancelDriveCommand(m_robotDrive));
 		rBumperDriver.whileHeld(new ReverseFeederCommand(m_shooter));
 
-		aButtonDriver.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); //CHANGED WITH ShootShortCommand
-		bButtonDriver.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); //CHANGED WITH ShootShortCommand
-		xButtonDriver.whenHeld(new ShootLongCommand(m_shooter, m_spinner)); //CHANGED WITH ShootLongCommand
-		yButtonDriver.whenHeld(new ShootLongCommand(m_shooter, m_spinner)); //CHANGED WITH ShootLongCommand
+		// aButtonDriver.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); //CHANGED WITH ShootShortCommand
+		// bButtonDriver.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); //CHANGED WITH ShootShortCommand
+		// xButtonDriver.whenHeld(new ShootLongCommand(m_shooter, m_spinner)); //CHANGED WITH ShootLongCommand
+		// yButtonDriver.whenHeld(new ShootLongCommand(m_shooter, m_spinner)); //CHANGED WITH ShootLongCommand
 
 
 		dPadUpDriver.whenPressed(new IncreaseSpeedCommand(m_robotDrive));
@@ -143,31 +143,24 @@ public class OI {
 
 		// Operator button commands
 		leftBumperOperator.whileHeld(new StopAllCommand(m_shooter, m_spinner, m_hopper));
-
 		rightBumperOperator.toggleWhenPressed(new StopIntakeCommand(m_spinner));
 
-		//WORKING
 		xButtonOperator.whenPressed(new RotateHopperCommand(m_hopper));
 
-		//WORKING
 		aButtonOperator.whileHeld(new ReverseIntakeCommand(m_spinner));
 		aButtonOperator.whenReleased(new ReverseIntakeCommand(m_spinner));
 
 		bButtonOperator.whileHeld(new ExtendHangerCommand(m_spinner));
 		startButtonOperator.whileHeld(new RetractHangerCommand(m_spinner));
-		
-		bButtonOperator.whenReleased(new StopIntakeCommand(m_spinner));
 		startButtonOperator.whenReleased(new StopIntakeCommand(m_spinner));
+		bButtonOperator.whenReleased(new StopIntakeCommand(m_spinner));
 
-		leftTriggerOperator.whileActiveOnce(new ShootLongCommand(m_shooter, m_spinner)); //CHANGED WITH ShootLongCommand
-		//TODO ADD whenReleased command to automate dropping
+		leftTriggerOperator.whileActiveOnce(new ShootLongCommand(m_shooter, m_spinner));
 
-		yButtonOperator.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); //CHANGED WITH ShootShortCommand
+		yButtonOperator.whenHeld(new ShootShortCommand(m_shooter, m_spinner)); 
 
-		//WORKING
 		backButtonOperator.whileHeld(new ReverseFeederCommand(m_shooter));
 
-		//WORKING
 		dPadDownOperator.whenPressed(new ToIntakeCommand(m_spinner, m_hopper, m_shooter));
 		dPadRightOperator.whenPressed(new ToColorCommand(m_spinner));
 		dPadUpOperator.whenPressed(new ToHangerCommand(m_spinner));
