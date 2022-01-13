@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
+  // Create a unique instances for each swerve module. Modules can be called one at a time using the module ID (modID).
   private final SwerveModule m_frontLeft = new SwerveModule("frontLeft", DriveConstants.kFrontLeftDriveMotorPort,
       DriveConstants.kFrontLeftTurningMotorPort, DriveConstants.kFrontLeftDriveEncoderReversed,
       DriveConstants.kFrontLeftOffset);
