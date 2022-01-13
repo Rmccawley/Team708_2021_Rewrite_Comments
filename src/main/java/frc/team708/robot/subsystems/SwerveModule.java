@@ -44,13 +44,13 @@ public class SwerveModule {
       double offset) {
     this.modID = modID;
     this.offset = offset;
-    m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
-    m_turningMotor = new TalonSRX(turningMotorChannel);
+    m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);// Create new drive motor controller object
+    m_turningMotor = new TalonSRX(turningMotorChannel);// Create new rotation motor controller object
 
     m_driveEncoder = m_driveMotor.getEncoder();
 
-    configureMotors();
-    resetEncoders();
+    configureMotors();// Set motor controller parameters 
+    resetEncoders();// Set encoder value to 0
 
     // Set whether drive encoder should be reversed or not
     m_driveMotor.setInverted(driveEncoderReversed);
