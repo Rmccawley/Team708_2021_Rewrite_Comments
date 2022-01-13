@@ -55,12 +55,12 @@ import org.opencv.imgproc.Imgproc;
 
 public class RobotContainer {
   // The robot's subsystems
-  public static final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private static final Hopper m_hopper = new Hopper();
-  private static final Spinner m_spinner = new Spinner();
-  public static final Shooter m_shooter = new Shooter();
-  private static final Turret m_turret = new Turret();
-  public static final VisionProcessor m_visionProcessor = new VisionProcessor();
+  public static final DriveSubsystem m_robotDrive = new DriveSubsystem(); //Create new drive subsystem object
+  private static final Hopper m_hopper = new Hopper(); //Create new hopper subsystem object
+  private static final Spinner m_spinner = new Spinner(); //Create new spinner subsystem object
+  public static final Shooter m_shooter = new Shooter(); //Create new shooter subsystem object
+  private static final Turret m_turret = new Turret(); //Create new turret subsystem object
+  public static final VisionProcessor m_visionProcessor = new VisionProcessor(); //Create new vision processor subsystem object
   public static final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
@@ -79,6 +79,11 @@ public class RobotContainer {
     // m_spinner.setDefaultCommand(new (m_spinner));
     m_spinner.setDefaultCommand(new InitIntakeCommand(m_spinner));
     m_hopper.setDefaultCommand(new StopHopperCommand(m_hopper));
+    
+    /**
+    * Map default drive to driver controller.
+    * Multiply by speed coefficent to scale output values.
+    */
     m_robotDrive.setDefaultCommand(new RunCommand(
 
         () -> m_robotDrive.drive(-m_robotDrive.getSpeedCoeff() * OI.getDriverY(GenericHID.Hand.kLeft),
